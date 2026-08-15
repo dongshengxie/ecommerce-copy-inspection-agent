@@ -1,0 +1,39 @@
+[project]
+name = "ecommerce-copy-inspection-agent"
+version = "0.1.0"
+description = "Engineering foundation for an e-commerce product-copy inspection and optimization agent."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14,<2",
+    "fastapi>=0.115,<1",
+    "langgraph>=0.2,<1",
+    "pydantic>=2.10,<3",
+    "sqlalchemy>=2,<3",
+    "uvicorn>=0.32,<1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8,<9",
+    "ruff>=0.8,<1",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
