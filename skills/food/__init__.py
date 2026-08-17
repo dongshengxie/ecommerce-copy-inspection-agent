@@ -1,0 +1,1 @@
+"""Food-domain quality skill."""

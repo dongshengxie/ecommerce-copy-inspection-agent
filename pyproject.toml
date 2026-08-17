@@ -9,6 +9,7 @@ dependencies = [
     "fastapi>=0.115,<1",
     "langgraph>=0.2,<1",
     "pydantic>=2.10,<3",
+    "pymysql>=1.1,<2",
     "sqlalchemy>=2,<3",
     "uvicorn>=0.32,<1",
 ]
@@ -24,6 +25,7 @@ package = false
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+pythonpath = ["."]
 addopts = "-ra"
 
 [tool.ruff]
