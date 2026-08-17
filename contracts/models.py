@@ -97,6 +97,7 @@ class TraceEvent(BaseModel):
     status: Literal["success", "failed"]
     latency_ms: int = Field(ge=0)
     error: str | None = None
+    metadata: dict[str, object] = Field(default_factory=dict)
 
 
 class InspectionReport(BaseModel):

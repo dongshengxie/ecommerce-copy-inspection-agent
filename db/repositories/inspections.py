@@ -143,5 +143,6 @@ class InspectionRepository:
                     status=trace.status,
                     latency_ms=trace.latency_ms,
                     error_message=trace.error,
+                    metadata_json=trace.metadata,
                 )
             )

@@ -3,7 +3,7 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
-from contracts.models import Issue, ProductInput
+from contracts.models import Issue, ProductInput, TraceEvent
 
 
 def _valid_product() -> dict[str, object]:
@@ -63,3 +63,16 @@ def test_issue_requires_evidence_span() -> None:
 
     with pytest.raises(ValidationError):
         Issue.model_validate(payload)
+
+
+def test_trace_event_defaults_metadata_to_an_empty_object() -> None:
+    trace = TraceEvent(
+        task_id="task-001",
+        step_name="load_rules",
+        tool_or_skill_name="rule_loader",
+        decision="加载规则",
+        status="success",
+        latency_ms=0,
+    )
+
+    assert trace.metadata == {}

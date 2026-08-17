@@ -103,3 +103,4 @@ class AgentTraceModel(Base):
     status: Mapped[str] = mapped_column(String(16), nullable=False)
     latency_ms: Mapped[int] = mapped_column(Integer, nullable=False)
     error_message: Mapped[str | None] = mapped_column(Text)
+    metadata_json: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
