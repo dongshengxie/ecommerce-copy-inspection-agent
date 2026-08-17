@@ -9,7 +9,7 @@
 - 优化由用户显式请求；审核完成后不会自动改写文案。
 - 规则和 Golden Dataset 由项目方提供，系统负责加载、引用、版本记录和评测执行。
 
-当前已完成 Phase 2 的同步食品质检 MVP：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、最小 FastAPI 接口和 Golden Dataset 回归。仍未实现 LangGraph 工作流、LLM、RAG、Redis/Celery、人审、Streamlit 或文案优化。
+当前已完成 Phase 3 的同步食品质检 MVP：规则导入、确定性 Food Tools、食品 Skill、受控 LangGraph 工作流、MySQL 持久化、最小 FastAPI 接口和 Golden Dataset 回归。工作流仅固定编排规则加载、食品检查、风险聚合与报告生成；仍未实现 LLM、RAG、Redis/Celery、人审、Streamlit 或文案优化。
 
 ## 技术栈
 

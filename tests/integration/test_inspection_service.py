@@ -47,10 +47,10 @@ def test_inspection_service_persists_case_004_report_issues_and_traces(
     with session_factory() as session:
         assert session.scalar(select(InspectionResultModel.task_id)) == report.task_id
         assert len(session.scalars(select(InspectionIssueModel)).all()) == 6
-        assert [
-            trace.step_name
-            for trace in session.scalars(
-                select(AgentTraceModel).order_by(AgentTraceModel.step_name)
-            ).all()
-        ] == ["food_quality_skill", "risk_aggregator"]
+        assert {trace.step_name for trace in session.scalars(select(AgentTraceModel)).all()} == {
+            "load_rules",
+            "food_quality_skill",
+            "risk_aggregator",
+            "report_builder",
+        }
     engine.dispose()
