@@ -21,5 +21,25 @@ services:
       retries: 10
       start_period: 30s
 
+  elasticsearch:
+    image: elasticsearch:8.15.5
+    container_name: ecommerce-copy-inspection-elasticsearch
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:9200:9200"
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9200/_cluster/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
 volumes:
   mysql_data:
+  elasticsearch_data:
