@@ -112,6 +112,7 @@ class InspectionApplicationService:
                 result.report,
                 result.rule_version,
                 result.trace_events,
+                result.rules,
             )
             session.commit()
             return result.report

@@ -75,6 +75,7 @@ class FoodInspectionWorkflow:
         return WorkflowResult(
             report=state["report"],
             rule_version=",".join(sorted({rule.version for rule in state["rules"]})),
+            rules=state["rules"],
             trace_events=state["trace_events"],
         )
 

@@ -50,4 +50,5 @@ class InspectionState(TypedDict, total=False):
 class WorkflowResult:
     report: InspectionReport
     rule_version: str
+    rules: list[Rule]
     trace_events: list[TraceEvent]

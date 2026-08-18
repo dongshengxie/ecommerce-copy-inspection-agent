@@ -7,12 +7,13 @@ from uuid import uuid4
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from contracts.models import InspectionReport, ProductInput, TaskStatus, TraceEvent
+from contracts.models import InspectionReport, ProductInput, Rule, TaskStatus, TraceEvent
 from db.models.core import (
     AgentTraceModel,
     InspectionIssueModel,
     InspectionResultModel,
     InspectionTaskModel,
+    InspectionTaskRuleModel,
     ProductModel,
     ProductRevisionModel,
 )
@@ -77,6 +78,7 @@ class InspectionRepository:
         report: InspectionReport,
         rule_version: str,
         traces: list[TraceEvent],
+        rules: list[Rule],
     ) -> None:
         task = self._require_task(task_id)
         task.status = TaskStatus.SUCCESS.value
@@ -105,6 +107,7 @@ class InspectionRepository:
                     confidence=issue.confidence,
                 )
             )
+        self._add_task_rule_references(task_id, rules)
         self._add_traces(traces)
         self._session.flush()
 
@@ -124,11 +127,30 @@ class InspectionRepository:
             return None
         return InspectionReport.model_validate(result.report_json)
 
+    def get_task_rule_references(self, task_id: str) -> list[InspectionTaskRuleModel]:
+        return list(
+            self._session.scalars(
+                select(InspectionTaskRuleModel)
+                .where(InspectionTaskRuleModel.task_id == task_id)
+                .order_by(InspectionTaskRuleModel.rule_id, InspectionTaskRuleModel.rule_version)
+            )
+        )
+
     def _require_task(self, task_id: str) -> InspectionTaskModel:
         task = self._session.get(InspectionTaskModel, task_id)
         if task is None:
             raise LookupError(f"未知质检任务：{task_id}")
         return task
+
+    def _add_task_rule_references(self, task_id: str, rules: list[Rule]) -> None:
+        for rule_id, rule_version in sorted({(rule.rule_id, rule.version) for rule in rules}):
+            self._session.add(
+                InspectionTaskRuleModel(
+                    task_id=task_id,
+                    rule_id=rule_id,
+                    rule_version=rule_version,
+                )
+            )
 
     def _add_traces(self, traces: list[TraceEvent]) -> None:
         for trace in traces:

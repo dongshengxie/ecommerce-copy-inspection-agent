@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, inspect
 
 
-def test_phase_two_migration_creates_only_approved_tables(
+def test_phase_five_migration_creates_only_approved_tables(
     migrated_test_database: str,
 ) -> None:
     engine = create_engine(migrated_test_database)
@@ -14,5 +14,7 @@ def test_phase_two_migration_creates_only_approved_tables(
         "inspection_results",
         "inspection_issues",
         "agent_traces",
+        "inspection_task_rules",
+        "optimization_attempts",
     }
     engine.dispose()

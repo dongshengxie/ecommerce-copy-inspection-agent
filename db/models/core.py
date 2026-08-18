@@ -91,6 +91,35 @@ class InspectionIssueModel(Base):
     confidence: Mapped[float] = mapped_column(Float, nullable=False)
 
 
+class InspectionTaskRuleModel(Base):
+    """The immutable rule ID/version set used by one completed inspection task."""
+
+    __tablename__ = "inspection_task_rules"
+
+    task_id: Mapped[str] = mapped_column(ForeignKey("inspection_tasks.id"), primary_key=True)
+    rule_id: Mapped[str] = mapped_column(String(128), primary_key=True)
+    rule_version: Mapped[str] = mapped_column(String(64), primary_key=True)
+
+
+class OptimizationAttemptModel(Base):
+    """One explicit optimization outcome, separate from its source inspection report."""
+
+    __tablename__ = "optimization_attempts"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    source_task_id: Mapped[str] = mapped_column(ForeignKey("inspection_tasks.id"), nullable=False)
+    status: Mapped[str] = mapped_column(String(32), nullable=False)
+    requested_fields: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    optimized_fields_json: Mapped[dict[str, object]] = mapped_column(JSON, nullable=False)
+    referenced_issues_json: Mapped[list[dict[str, object]]] = mapped_column(JSON, nullable=False)
+    referenced_rule_ids: Mapped[list[str]] = mapped_column(JSON, nullable=False)
+    verification_report_json: Mapped[dict[str, object] | None] = mapped_column(JSON)
+    failure_reason: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, nullable=False
+    )
+
+
 class AgentTraceModel(Base):
     __tablename__ = "agent_traces"
 

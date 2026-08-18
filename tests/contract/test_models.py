@@ -4,6 +4,7 @@ import pytest
 from pydantic import ValidationError
 
 from contracts.models import Issue, ProductInput, TraceEvent
+from contracts.optimization import OptimizationRequest, OptimizationResult
 
 
 def _valid_product() -> dict[str, object]:
@@ -76,3 +77,23 @@ def test_trace_event_defaults_metadata_to_an_empty_object() -> None:
     )
 
     assert trace.metadata == {}
+
+
+def test_optimization_request_rejects_unwritable_and_duplicate_fields() -> None:
+    with pytest.raises(ValidationError):
+        OptimizationRequest.model_validate({"fields": ["attributes"]})
+    with pytest.raises(ValidationError, match="优化字段不能重复"):
+        OptimizationRequest(fields=["title", "title"])
+
+
+def test_optimization_result_is_separate_from_inspection_report() -> None:
+    result = OptimizationResult(
+        optimization_id="opt-001",
+        source_task_id="task-001",
+        status="failed",
+        requested_fields=["title"],
+        failure_reason="llm_failed",
+    )
+
+    assert result.verification_report is None
+    assert result.optimized_fields == {}
