@@ -9,7 +9,7 @@
 - 优化由用户显式请求；审核完成后不会自动改写文案。
 - 规则和 Golden Dataset 由项目方提供，系统负责加载、引用、版本记录和评测执行。
 
-当前已完成 Phase 5 的核心能力：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、Elasticsearch 派生规则索引、BGE 混合检索、DeepSeek 结构化语义判断、受控 LangGraph 工作流、显式文案优化与二次质检、规则依据查询、Trace 查询，以及离线/实时评测 Runner。Redis/Celery、人审工作台与 Streamlit Demo 尚未实现。
+当前已完成 Phase 5 的核心能力：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、Elasticsearch 派生规则索引、BGE 混合检索、DeepSeek 结构化语义判断、受控 LangGraph 工作流、显式文案优化与二次质检、规则依据查询、Trace 查询、离线/实时评测 Runner，以及 Streamlit 演示页。Redis/Celery 与人审工作台尚未实现。
 
 ## 技术栈
 
@@ -69,6 +69,14 @@ source .env
 set +a
 uv run uvicorn app.main:app --reload
 ```
+
+另开一个终端启动 Streamlit Demo：
+
+```bash
+uv run streamlit run app/demo.py
+```
+
+Demo 默认调用 `http://127.0.0.1:8000`；若 FastAPI 使用其他地址，只需在本机 `.env` 设置非敏感变量 `STREAMLIT_API_BASE_URL`。页面只会经由 FastAPI 调用：默认关闭“启用语义质检”，因此不产生 BGE/DeepSeek 调用；“请求优化”也只能由用户显式点击触发，绝不会在质检后自动执行。
 
 运行工程质量检查：
 
