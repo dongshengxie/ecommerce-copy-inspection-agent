@@ -37,9 +37,7 @@ class Settings:
             bge_api_base_url=os.environ.get("BGE_API_BASE_URL", ""),
             bge_api_key=os.environ.get("BGE_API_KEY", ""),
             bge_embedding_model=os.environ.get("BGE_EMBEDDING_MODEL", "BAAI/bge-m3"),
-            bge_reranker_model=os.environ.get(
-                "BGE_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3"
-            ),
+            bge_reranker_model=os.environ.get("BGE_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3"),
             deepseek_api_key=os.environ.get("DEEPSEEK_API_KEY", ""),
             deepseek_model=os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-flash"),
         )

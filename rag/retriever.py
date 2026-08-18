@@ -83,9 +83,9 @@ class RuleRetriever:
         if not fused:
             return self._result([], started_at)
 
-        ranked_hits = sorted(
-            fused.values(), key=lambda item: (-item["rrf_score"], item["key"])
-        )[:_RETRIEVAL_SIZE]
+        ranked_hits = sorted(fused.values(), key=lambda item: (-item["rrf_score"], item["key"]))[
+            :_RETRIEVAL_SIZE
+        ]
         reranker_scores = self._reranker_provider.rerank(
             query, [item["retrieval_text"] for item in ranked_hits]
         )
@@ -171,8 +171,7 @@ class RuleRetriever:
                 version = source.get("version")
                 retrieval_text = source.get("retrieval_text")
                 if not all(
-                    isinstance(value, str) and value
-                    for value in (rule_id, version, retrieval_text)
+                    isinstance(value, str) and value for value in (rule_id, version, retrieval_text)
                 ):
                     continue
                 key = (rule_id, version)
@@ -183,9 +182,7 @@ class RuleRetriever:
                 candidate["rrf_score"] = float(candidate["rrf_score"]) + 1 / (_RRF_K + rank)
         return fused
 
-    def _result(
-        self, candidates: list[RetrievalCandidate], started_at: float
-    ) -> RetrievalResult:
+    def _result(self, candidates: list[RetrievalCandidate], started_at: float) -> RetrievalResult:
         return RetrievalResult(
             candidates=candidates,
             trace_metadata={
