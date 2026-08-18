@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Protocol
 
 from pydantic import BaseModel, Field
@@ -12,6 +13,34 @@ class EmbeddingProvider(Protocol):
 
     def embed(self, text: str) -> list[float]:
         """Return a 1024-dimensional vector for non-empty text."""
+
+
+class RerankerProvider(Protocol):
+    """Score candidate documents against one retrieval query."""
+
+    def rerank(self, query: str, documents: list[str]) -> list[float]:
+        """Return one finite score for every input document in its original order."""
+
+
+@dataclass(frozen=True)
+class RetrievalCandidate:
+    """A current Rule selected from the derived Elasticsearch index."""
+
+    rule: Rule
+    rrf_score: float
+    reranker_score: float
+
+
+@dataclass(frozen=True)
+class RetrievalResult:
+    """RAG candidates plus safe observability metadata for one retrieval."""
+
+    candidates: list[RetrievalCandidate]
+    trace_metadata: dict[str, object]
+
+    @property
+    def candidate_rule_ids(self) -> list[str]:
+        return [candidate.rule.rule_id for candidate in self.candidates]
 
 
 class RuleIndexDocument(BaseModel):
