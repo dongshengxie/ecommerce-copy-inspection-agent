@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, sessionmaker
 
+from agent.state.inspection import SemanticInspectionSkill
 from app.services.inspection import InspectionApplicationService
 from contracts.models import ProductInput
 from db.repositories.inspections import InspectionRepository
@@ -22,9 +23,15 @@ class InspectionTaskResponse(BaseModel):
     rule_version: str
 
 
-def create_inspection_router(session_factory: sessionmaker[Session]) -> APIRouter:
+def create_inspection_router(
+    session_factory: sessionmaker[Session],
+    *,
+    semantic_inspection_skill: SemanticInspectionSkill | None = None,
+) -> APIRouter:
     router = APIRouter(prefix="/api/v2/inspections", tags=["inspections"])
-    service = InspectionApplicationService(session_factory)
+    service = InspectionApplicationService(
+        session_factory, semantic_inspection_skill=semantic_inspection_skill
+    )
 
     @router.post("", response_model=InspectionCreatedResponse, status_code=status.HTTP_201_CREATED)
     def create_inspection(product: ProductInput) -> InspectionCreatedResponse:

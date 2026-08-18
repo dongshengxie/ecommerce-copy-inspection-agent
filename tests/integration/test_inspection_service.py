@@ -50,6 +50,8 @@ def test_inspection_service_persists_case_004_report_issues_and_traces(
         assert {trace.step_name for trace in session.scalars(select(AgentTraceModel)).all()} == {
             "load_rules",
             "food_quality_skill",
+            "semantic_risk_skill",
+            "issue_fusion",
             "risk_aggregator",
             "report_builder",
         }

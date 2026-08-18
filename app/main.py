@@ -5,15 +5,21 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from app.api.inspections import create_inspection_router
 from app.config import Settings
+from app.services.inspection import create_semantic_inspection_skill
 from db.session import create_engine_and_session
 
 
 def create_app(session_factory: sessionmaker[Session] | None = None) -> FastAPI:
     """Create the Phase 2 synchronous inspection API application."""
+    settings = Settings.from_environment()
     app = FastAPI(title="电商商品文案质检与优化 Agent", version="0.1.0")
+    resolved_session_factory = session_factory or create_engine_and_session(settings)
     app.include_router(
         create_inspection_router(
-            session_factory or create_engine_and_session(Settings.from_environment())
+            resolved_session_factory,
+            semantic_inspection_skill=(
+                None if session_factory is not None else create_semantic_inspection_skill(settings)
+            ),
         )
     )
     return app

@@ -5,10 +5,11 @@ from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
-from contracts.models import Issue, ProductInput
+from contracts.models import Issue, ProductInput, Rule
 from llm.models import SemanticFinding, SemanticSkillResult
 from llm.providers import LLMProvider, LLMUnavailableError
-from rag.models import RetrievalCandidate
+from rag.models import RetrievalCandidate, RetrievalResult
+from rag.providers import RagUnavailableError
 
 _PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "semantic_risk" / "1.0.0.json"
 
@@ -175,3 +176,41 @@ class SemanticRiskSkill:
             "output_tokens": response.output_tokens,
             "latency_ms": response.latency_ms,
         }
+
+
+class SemanticInspectionSkill:
+    """Combine RAG candidate retrieval with the bounded semantic-risk skill."""
+
+    def __init__(self, *, rule_retriever: object, semantic_risk_skill: SemanticRiskSkill) -> None:
+        self._rule_retriever = rule_retriever
+        self._semantic_risk_skill = semantic_risk_skill
+
+    def inspect(
+        self,
+        product: ProductInput,
+        rules: list[Rule],
+        deterministic_issues: list[Issue],
+    ) -> SemanticSkillResult:
+        try:
+            result = self._retrieve(product, rules)
+        except RagUnavailableError:
+            return SemanticSkillResult(
+                degradation_flags=["rag_unavailable"],
+                review_required=True,
+                trace_metadata={"error_category": "rag_unavailable"},
+            )
+        semantic_result = self._semantic_risk_skill.inspect(
+            product, result.candidates, deterministic_issues
+        )
+        return SemanticSkillResult(
+            issues=semantic_result.issues,
+            degradation_flags=semantic_result.degradation_flags,
+            review_required=semantic_result.review_required,
+            trace_metadata={**result.trace_metadata, **semantic_result.trace_metadata},
+        )
+
+    def _retrieve(self, product: ProductInput, rules: list[Rule]) -> RetrievalResult:
+        retrieve = getattr(self._rule_retriever, "retrieve", None)
+        if not callable(retrieve):
+            raise TypeError("semantic inspection requires a rule retriever")
+        return retrieve(product, rules)

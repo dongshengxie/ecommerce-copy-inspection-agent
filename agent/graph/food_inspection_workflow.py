@@ -4,26 +4,67 @@ from time import perf_counter
 
 from langgraph.graph import END, START, StateGraph
 
-from agent.state.inspection import InspectionState, RuleLoader, WorkflowResult
-from contracts.models import InspectionReport, ProductInput, RiskLevel, TaskStatus, TraceEvent
+from agent.issue_fusion import fuse_issues
+from agent.state.inspection import (
+    InspectionState,
+    RuleLoader,
+    SemanticInspectionSkill,
+    WorkflowResult,
+)
+from contracts.models import (
+    InspectionReport,
+    Issue,
+    ProductInput,
+    RiskLevel,
+    Rule,
+    TaskStatus,
+    TraceEvent,
+)
+from llm.models import SemanticSkillResult
 from skills.food.quality import FoodQualitySkill
 from tools.food.risk import aggregate_risk
+
+
+class _NoopSemanticInspectionSkill:
+    """Keep the fixed graph offline when no semantic dependencies are injected."""
+
+    def inspect(
+        self,
+        product: ProductInput,
+        rules: list[Rule],
+        deterministic_issues: list[Issue],
+    ) -> SemanticSkillResult:
+        del product, rules, deterministic_issues
+        return SemanticSkillResult()
 
 
 class FoodInspectionWorkflow:
     """Run the fixed deterministic food-inspection graph without persistence access."""
 
-    def __init__(self, rule_loader: RuleLoader, food_quality_skill: FoodQualitySkill) -> None:
+    def __init__(
+        self,
+        rule_loader: RuleLoader,
+        food_quality_skill: FoodQualitySkill,
+        *,
+        semantic_inspection_skill: SemanticInspectionSkill | None = None,
+    ) -> None:
         self._rule_loader = rule_loader
         self._food_quality_skill = food_quality_skill
+        self._semantic_inspection_skill = (
+            semantic_inspection_skill or _NoopSemanticInspectionSkill()
+        )
         graph = StateGraph(InspectionState)
         graph.add_node("load_rules", self._load_rules)
         graph.add_node("food_quality_skill", self._run_food_quality_skill)
+        graph.add_node("semantic_risk_skill", self._run_semantic_risk_skill)
+        graph.add_node("issue_fusion", self._fuse_issues)
         graph.add_node("risk_aggregator", self._aggregate_risk)
         graph.add_node("report_builder", self._build_report)
         graph.add_edge(START, "load_rules")
         graph.add_edge("load_rules", "food_quality_skill")
-        graph.add_edge("food_quality_skill", "risk_aggregator")
+        graph.add_edge("food_quality_skill", "semantic_risk_skill")
+        graph.add_edge("semantic_risk_skill", "issue_fusion")
+        graph.add_edge("issue_fusion", "risk_aggregator")
         graph.add_edge("risk_aggregator", "report_builder")
         graph.add_edge("report_builder", END)
         self._graph = graph.compile()
@@ -73,14 +114,67 @@ class FoodInspectionWorkflow:
             ],
         }
 
+    def _run_semantic_risk_skill(self, state: InspectionState) -> dict[str, object]:
+        started_at = perf_counter()
+        semantic_result = self._semantic_inspection_skill.inspect(
+            state["product"], state["rules"], state["skill_result"].issues
+        )
+        candidate_rule_ids = semantic_result.trace_metadata.get("candidate_rule_ids", [])
+        return {
+            "semantic_result": semantic_result,
+            "trace_events": [
+                self._trace(
+                    state,
+                    step_name="semantic_risk_skill",
+                    tool_or_skill_name="semantic_risk_skill",
+                    rule_ids=list(candidate_rule_ids)
+                    if isinstance(candidate_rule_ids, list)
+                    and all(isinstance(rule_id, str) for rule_id in candidate_rule_ids)
+                    else [],
+                    decision=(
+                        "语义质检降级"
+                        if semantic_result.degradation_flags
+                        else f"生成 {len(semantic_result.issues)} 个语义 Issue"
+                    ),
+                    started_at=started_at,
+                    metadata=semantic_result.trace_metadata,
+                )
+            ],
+        }
+
+    def _fuse_issues(self, state: InspectionState) -> dict[str, object]:
+        started_at = perf_counter()
+        fusion = fuse_issues(state["skill_result"].issues, state["semantic_result"])
+        return {
+            "issues": fusion.issues,
+            "degradation_flags": fusion.degradation_flags,
+            "review_required": fusion.review_required,
+            "review_reasons": fusion.review_reasons,
+            "trace_events": [
+                self._trace(
+                    state,
+                    step_name="issue_fusion",
+                    tool_or_skill_name="deterministic_first_issue_fusion",
+                    rule_ids=sorted(
+                        {rule_id for issue in fusion.issues for rule_id in issue.rule_ids}
+                    ),
+                    decision=f"融合后保留 {len(fusion.issues)} 个 Issue",
+                    started_at=started_at,
+                )
+            ],
+        }
+
     def _aggregate_risk(self, state: InspectionState) -> dict[str, object]:
         started_at = perf_counter()
-        automated_risk_level = aggregate_risk(state["skill_result"].issues)
-        review_required = automated_risk_level is RiskLevel.HIGH
+        automated_risk_level = aggregate_risk(state["issues"])
+        review_required = state["review_required"] or automated_risk_level is RiskLevel.HIGH
+        review_reasons = list(state["review_reasons"])
+        if automated_risk_level is RiskLevel.HIGH:
+            review_reasons.append("命中 high 风险")
         return {
             "automated_risk_level": automated_risk_level,
             "review_required": review_required,
-            "review_reasons": ["命中 high 风险"] if review_required else [],
+            "review_reasons": list(dict.fromkeys(review_reasons)),
             "trace_events": [
                 self._trace(
                     state,
@@ -101,7 +195,8 @@ class FoodInspectionWorkflow:
             automated_risk_level=state["automated_risk_level"],
             review_required=state["review_required"],
             review_reasons=state["review_reasons"],
-            issues=state["skill_result"].issues,
+            issues=state["issues"],
+            degradation_flags=state["degradation_flags"],
             trace_id=state["task_id"],
         )
         return {
@@ -129,6 +224,7 @@ class FoodInspectionWorkflow:
         rule_ids: list[str],
         decision: str,
         started_at: float,
+        metadata: dict[str, object] | None = None,
     ) -> TraceEvent:
         return TraceEvent(
             task_id=state["task_id"],
@@ -138,4 +234,5 @@ class FoodInspectionWorkflow:
             decision=decision,
             status="success",
             latency_ms=int((perf_counter() - started_at) * 1000),
+            metadata=metadata or {},
         )
