@@ -23,9 +23,18 @@ class _SemanticPayload(BaseModel):
 class SemanticRiskSkill:
     """Validate one structured semantic pass against a bounded RAG candidate set."""
 
-    def __init__(self, *, llm_provider: LLMProvider, prompt_version: str) -> None:
+    def __init__(
+        self,
+        *,
+        llm_provider: LLMProvider,
+        prompt_version: str,
+        provider_name: str = "deepseek",
+        prompt_name: str = "semantic_risk",
+    ) -> None:
         self._llm_provider = llm_provider
         self._prompt_version = prompt_version
+        self._provider_name = provider_name
+        self._prompt_name = prompt_name
 
     def inspect(
         self,
@@ -42,7 +51,10 @@ class SemanticRiskSkill:
             return SemanticSkillResult(
                 degradation_flags=["llm_failed"],
                 review_required=True,
-                trace_metadata={"prompt_version": self._prompt_version},
+                trace_metadata=self._unavailable_trace_metadata(
+                    retry_count=0,
+                    repair_attempted=False,
+                ),
             )
 
         for attempt in range(2):
@@ -50,7 +62,12 @@ class SemanticRiskSkill:
                 findings = _SemanticPayload.model_validate(response.payload).findings
                 return SemanticSkillResult(
                     issues=self._issues(product, candidates, findings),
-                    trace_metadata=self._trace_metadata(response),
+                    trace_metadata=self._trace_metadata(
+                        response,
+                        retry_count=attempt,
+                        schema_valid=True,
+                        repair_attempted=attempt == 1,
+                    ),
                 )
             except (ValidationError, ValueError):
                 if attempt == 1:
@@ -69,12 +86,20 @@ class SemanticRiskSkill:
                     return SemanticSkillResult(
                         degradation_flags=["llm_failed"],
                         review_required=True,
-                        trace_metadata={"prompt_version": self._prompt_version},
+                        trace_metadata=self._unavailable_trace_metadata(
+                            retry_count=1,
+                            repair_attempted=True,
+                        ),
                     )
         return SemanticSkillResult(
             degradation_flags=["structured_output_invalid"],
             review_required=True,
-            trace_metadata=self._trace_metadata(response),
+            trace_metadata=self._trace_metadata(
+                response,
+                retry_count=1,
+                schema_valid=False,
+                repair_attempted=True,
+            ),
         )
 
     def _messages(
@@ -164,17 +189,42 @@ class SemanticRiskSkill:
                 return value
         raise ValueError("semantic finding references an unsupported product field")
 
-    def _trace_metadata(self, response: object) -> dict[str, object]:
+    def _trace_metadata(
+        self,
+        response: object,
+        *,
+        retry_count: int,
+        schema_valid: bool,
+        repair_attempted: bool,
+    ) -> dict[str, object]:
         from llm.models import LLMResponse
 
         if not isinstance(response, LLMResponse):
             raise TypeError("LLM provider must return LLMResponse")
         return {
+            "provider": self._provider_name,
+            "prompt_name": self._prompt_name,
             "prompt_version": self._prompt_version,
             "model_name": response.model_name,
             "input_tokens": response.input_tokens,
             "output_tokens": response.output_tokens,
             "latency_ms": response.latency_ms,
+            "retry_count": retry_count,
+            "schema_valid": schema_valid,
+            "repair_attempted": repair_attempted,
+        }
+
+    def _unavailable_trace_metadata(
+        self, *, retry_count: int, repair_attempted: bool
+    ) -> dict[str, object]:
+        return {
+            "provider": self._provider_name,
+            "prompt_name": self._prompt_name,
+            "prompt_version": self._prompt_version,
+            "retry_count": retry_count,
+            "schema_valid": False,
+            "repair_attempted": repair_attempted,
+            "error_category": "llm_failed",
         }
 
 

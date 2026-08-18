@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from fastapi import APIRouter, HTTPException, status
+from typing import Literal
+
+from fastapi import APIRouter, Header, HTTPException, status
 from pydantic import BaseModel
 from sqlalchemy.orm import Session, sessionmaker
 
@@ -23,6 +25,21 @@ class InspectionTaskResponse(BaseModel):
     rule_version: str
 
 
+class TraceEventResponse(BaseModel):
+    step_name: str
+    tool_or_skill_name: str
+    rule_ids: list[str]
+    decision: str
+    status: Literal["success", "failed"]
+    latency_ms: int
+    metadata: dict[str, object]
+
+
+class InspectionTraceResponse(BaseModel):
+    task_id: str
+    events: list[TraceEventResponse]
+
+
 def create_inspection_router(
     session_factory: sessionmaker[Session],
     *,
@@ -34,9 +51,17 @@ def create_inspection_router(
     )
 
     @router.post("", response_model=InspectionCreatedResponse, status_code=status.HTTP_201_CREATED)
-    def create_inspection(product: ProductInput) -> InspectionCreatedResponse:
+    def create_inspection(
+        product: ProductInput,
+        semantic_inspection: Literal["enabled", "disabled"] = Header(
+            default="disabled", alias="X-Semantic-Inspection"
+        ),
+    ) -> InspectionCreatedResponse:
         try:
-            report = service.create_inspection(product)
+            report = service.create_inspection(
+                product,
+                semantic_enabled=semantic_inspection == "enabled",
+            )
         except Exception as error:
             raise HTTPException(status_code=500, detail="质检执行失败") from error
         return InspectionCreatedResponse(
@@ -65,5 +90,14 @@ def create_inspection_router(
         if report is None:
             raise HTTPException(status_code=404, detail="质检结果不存在")
         return report.model_dump(mode="json")
+
+    @router.get("/{task_id}/trace", response_model=InspectionTraceResponse)
+    def get_inspection_trace(task_id: str) -> InspectionTraceResponse:
+        with session_factory() as session:
+            repository = InspectionRepository(session)
+            if repository.get_task(task_id) is None:
+                raise HTTPException(status_code=404, detail="质检任务不存在")
+            events = repository.list_trace_summaries(task_id)
+        return InspectionTraceResponse(task_id=task_id, events=events)
 
     return router

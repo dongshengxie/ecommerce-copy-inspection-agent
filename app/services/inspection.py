@@ -86,7 +86,9 @@ class InspectionApplicationService:
         self._food_quality_skill = FoodQualitySkill()
         self._semantic_inspection_skill = semantic_inspection_skill
 
-    def create_inspection(self, product: ProductInput) -> InspectionReport:
+    def create_inspection(
+        self, product: ProductInput, *, semantic_enabled: bool = False
+    ) -> InspectionReport:
         with self._session_factory() as session:
             repository = InspectionRepository(session)
             product_revision = repository.get_or_create_product_revision(product)
@@ -94,17 +96,25 @@ class InspectionApplicationService:
             session.commit()
 
         try:
-            return self._complete_inspection(task.id, product)
+            return self._complete_inspection(
+                task.id,
+                product,
+                semantic_enabled=semantic_enabled,
+            )
         except Exception as error:
             self._record_failure(task.id, error)
             raise
 
-    def _complete_inspection(self, task_id: str, product: ProductInput) -> InspectionReport:
+    def _complete_inspection(
+        self, task_id: str, product: ProductInput, *, semantic_enabled: bool
+    ) -> InspectionReport:
         with self._session_factory() as session:
             workflow = FoodInspectionWorkflow(
                 rule_loader=RuleRepository(session).list_enabled_food_rules,
                 food_quality_skill=self._food_quality_skill,
-                semantic_inspection_skill=self._semantic_inspection_skill,
+                semantic_inspection_skill=(
+                    self._semantic_inspection_skill if semantic_enabled else None
+                ),
             )
             result = workflow.invoke(task_id=task_id, product=product)
             InspectionRepository(session).complete_task(

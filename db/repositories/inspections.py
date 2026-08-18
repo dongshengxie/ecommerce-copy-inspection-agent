@@ -18,6 +18,27 @@ from db.models.core import (
     ProductRevisionModel,
 )
 
+SAFE_TRACE_METADATA_KEYS = frozenset(
+    {
+        "strategy",
+        "candidate_rule_ids",
+        "index_name",
+        "provider",
+        "prompt_name",
+        "prompt_version",
+        "model_name",
+        "input_tokens",
+        "output_tokens",
+        "latency_ms",
+        "retry_count",
+        "schema_valid",
+        "repair_attempted",
+        "operation",
+        "attempt",
+        "error_category",
+    }
+)
+
 
 class InspectionRepository:
     """Persist synchronous inspection task lifecycle records without committing."""
@@ -135,6 +156,28 @@ class InspectionRepository:
                 .order_by(InspectionTaskRuleModel.rule_id, InspectionTaskRuleModel.rule_version)
             )
         )
+
+    def list_trace_summaries(self, task_id: str) -> list[dict[str, object]]:
+        """Return only API-safe trace fields, excluding raw inputs and model outputs."""
+        traces = self._session.scalars(
+            select(AgentTraceModel).where(AgentTraceModel.task_id == task_id)
+        )
+        return [
+            {
+                "step_name": trace.step_name,
+                "tool_or_skill_name": trace.tool_or_skill_name,
+                "rule_ids": trace.rule_ids,
+                "decision": trace.decision,
+                "status": trace.status,
+                "latency_ms": trace.latency_ms,
+                "metadata": {
+                    key: value
+                    for key, value in trace.metadata_json.items()
+                    if key in SAFE_TRACE_METADATA_KEYS
+                },
+            }
+            for trace in traces
+        ]
 
     def _require_task(self, task_id: str) -> InspectionTaskModel:
         task = self._session.get(InspectionTaskModel, task_id)

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from contracts.models import FoodAttributes, ProductInput, RiskLevel, Rule
 from llm.models import LLMResponse
+from llm.providers import LLMUnavailableError
 from llm.semantic_risk import SemanticRiskSkill
 from rag.models import RetrievalCandidate
 
@@ -61,6 +62,12 @@ class _FakeLLM:
         )
 
 
+class _UnavailableLLM:
+    def complete_structured(self, messages: list[dict[str, str]]) -> LLMResponse:
+        del messages
+        raise LLMUnavailableError("provider unavailable")
+
+
 def test_semantic_skill_creates_issue_only_for_candidate_rule_and_exact_evidence() -> None:
     skill = SemanticRiskSkill(
         llm_provider=_FakeLLM(
@@ -90,11 +97,16 @@ def test_semantic_skill_creates_issue_only_for_candidate_rule_and_exact_evidence
     assert result.issues[0].risk_level is RiskLevel.MEDIUM
     assert result.review_required is False
     assert result.trace_metadata == {
+        "provider": "deepseek",
+        "prompt_name": "semantic_risk",
         "prompt_version": "1.0.0",
         "model_name": "deepseek-chat",
         "input_tokens": 10,
         "output_tokens": 5,
         "latency_ms": 20,
+        "retry_count": 0,
+        "schema_valid": True,
+        "repair_attempted": False,
     }
 
 
@@ -108,6 +120,36 @@ def test_semantic_skill_retries_once_then_requires_review_for_invalid_output() -
     assert result.degradation_flags == ["structured_output_invalid"]
     assert result.review_required is True
     assert llm.call_count == 2
+    assert result.trace_metadata["retry_count"] == 1
+    assert result.trace_metadata["schema_valid"] is False
+    assert result.trace_metadata["repair_attempted"] is True
+
+
+def test_semantic_skill_records_repaired_structured_output_metadata() -> None:
+    repaired_finding = {
+        "findings": [
+            {
+                "rule_id": "food_health_002",
+                "rule_version": "1.0.0",
+                "field": "description",
+                "evidence_span": "改善睡眠",
+                "rationale": "出现身体功能改善暗示",
+                "suggestion": "改为描述口感",
+                "confidence": 0.75,
+            }
+        ]
+    }
+    skill = SemanticRiskSkill(
+        llm_provider=_FakeLLM([{"unexpected": []}, repaired_finding]),
+        prompt_version="1.0.0",
+    )
+
+    result = skill.inspect(_product(), [_candidate()], [])
+
+    assert len(result.issues) == 1
+    assert result.trace_metadata["retry_count"] == 1
+    assert result.trace_metadata["schema_valid"] is True
+    assert result.trace_metadata["repair_attempted"] is True
 
 
 def test_semantic_skill_rejects_evidence_that_is_not_in_the_reported_source_field() -> None:
@@ -133,3 +175,21 @@ def test_semantic_skill_rejects_evidence_that_is_not_in_the_reported_source_fiel
 
     assert result.issues == []
     assert result.degradation_flags == ["structured_output_invalid"]
+
+
+def test_semantic_skill_records_llm_failure_metadata_without_schema_repair() -> None:
+    skill = SemanticRiskSkill(llm_provider=_UnavailableLLM(), prompt_version="1.0.0")
+
+    result = skill.inspect(_product(), [_candidate()], [])
+
+    assert result.degradation_flags == ["llm_failed"]
+    assert result.review_required is True
+    assert result.trace_metadata == {
+        "provider": "deepseek",
+        "prompt_name": "semantic_risk",
+        "prompt_version": "1.0.0",
+        "retry_count": 0,
+        "schema_valid": False,
+        "repair_attempted": False,
+        "error_category": "llm_failed",
+    }
