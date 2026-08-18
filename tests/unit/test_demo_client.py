@@ -1,30 +1,33 @@
 from __future__ import annotations
 
+import subprocess
+import sys
+from pathlib import Path
+
 import httpx
 
 from app.demo import DemoApiClient
-from contracts.models import ProductInput
+
+ROOT = Path(__file__).resolve().parents[2]
 
 
-def _product() -> ProductInput:
-    return ProductInput.model_validate(
-        {
-            "product_id": "demo-product-1",
-            "product_revision": 1,
-            "category": "食品",
-            "title": "谷物冲饮 30g",
-            "selling_points": ["独立包装"],
-            "description": "清香口感。",
-            "attributes": {
-                "ingredients": "燕麦",
-                "shelf_life": "12个月",
-                "storage_method": "阴凉干燥处保存",
-                "origin": "浙江",
-            },
-            "marketing_description": "30g 盒装。",
-            "trigger_source": "streamlit_demo",
-        }
-    )
+def _product() -> dict[str, object]:
+    return {
+        "product_id": "demo-product-1",
+        "product_revision": 1,
+        "category": "食品",
+        "title": "谷物冲饮 30g",
+        "selling_points": ["独立包装"],
+        "description": "清香口感。",
+        "attributes": {
+            "ingredients": "燕麦",
+            "shelf_life": "12个月",
+            "storage_method": "阴凉干燥处保存",
+            "origin": "浙江",
+        },
+        "marketing_description": "30g 盒装。",
+        "trigger_source": "streamlit_demo",
+    }
 
 
 class _FakeHttpClient:
@@ -68,3 +71,19 @@ def test_demo_client_uses_api_for_evidence_trace_and_explicit_optimization() -> 
         "/api/v2/inspections/task-1/rule-evidence",
         "/api/v2/inspections/task-1/optimization",
     ]
+
+
+def test_demo_entry_module_loads_from_streamlit_script_directory() -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            (f"import runpy; runpy.run_path({str(ROOT / 'app/demo.py')!r}, run_name='demo_entry')"),
+        ],
+        cwd=ROOT / "app",
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert result.returncode == 0, result.stderr

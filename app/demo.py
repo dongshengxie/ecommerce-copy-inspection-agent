@@ -10,11 +10,14 @@ from typing import Literal
 import httpx
 import streamlit as st
 
-from contracts.models import ProductInput
-from contracts.optimization import WritableCopyField
-
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_API_BASE_URL = "http://127.0.0.1:8000"
+WritableCopyField = Literal[
+    "title",
+    "selling_points",
+    "description",
+    "marketing_description",
+]
 WRITABLE_FIELDS: tuple[WritableCopyField, ...] = (
     "title",
     "selling_points",
@@ -35,12 +38,12 @@ class DemoApiClient:
         self._base_url = base_url.rstrip("/")
 
     def create_inspection(
-        self, product: ProductInput, *, semantic_enabled: bool
+        self, product: Mapping[str, object], *, semantic_enabled: bool
     ) -> dict[str, object]:
         return self._request_json(
             self._http_client.post(
                 f"{self._base_url}/api/v2/inspections",
-                json=product.model_dump(mode="json"),
+                json=dict(product),
                 headers={"X-Semantic-Inspection": "enabled" if semantic_enabled else "disabled"},
             )
         )
@@ -269,22 +272,22 @@ def run() -> None:
         submitted = st.form_submit_button("开始质检")
 
     if submitted:
-        product = ProductInput(
-            product_id=str(sample["product_id"]),
-            product_revision=int(sample["product_revision"]),
-            category="食品",
-            title=title,
-            selling_points=[item for item in selling_points.splitlines() if item.strip()],
-            description=description,
-            attributes={
+        product: dict[str, object] = {
+            "product_id": str(sample["product_id"]),
+            "product_revision": int(sample["product_revision"]),
+            "category": "食品",
+            "title": title,
+            "selling_points": [item for item in selling_points.splitlines() if item.strip()],
+            "description": description,
+            "attributes": {
                 "ingredients": ingredients,
                 "shelf_life": shelf_life,
                 "storage_method": storage_method,
                 "origin": origin,
             },
-            marketing_description=marketing_description,
-            trigger_source="streamlit_demo",
-        )
+            "marketing_description": marketing_description,
+            "trigger_source": "streamlit_demo",
+        }
         try:
             client = _demo_client()
             created = client.create_inspection(product, semantic_enabled=semantic_enabled)
