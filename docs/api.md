@@ -1,13 +1,17 @@
 # Phase 2 同步质检 API
 
-本阶段仅支持食品类商品的同步确定性质检。接口不调用 LLM、RAG、LangGraph、Redis 或 Celery。
+当前仅支持食品类商品的同步质检。固定 LangGraph 工作流会先执行全部确定性检查，再在可用时执行受控的规则检索与语义判断；Redis、Celery、异步队列和自动文案优化尚未实现。
 
 ## 启动
 
 ```bash
-docker compose up -d mysql
+docker compose up -d mysql elasticsearch
 uv run alembic upgrade head
 uv run python scripts/import_rules.py data/rules/food_rules.json
+uv run python scripts/sync_rules_to_es.py
+set -a
+source .env
+set +a
 uv run uvicorn app.main:app --reload
 ```
 

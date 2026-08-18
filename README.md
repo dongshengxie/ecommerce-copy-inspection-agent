@@ -9,7 +9,7 @@
 - 优化由用户显式请求；审核完成后不会自动改写文案。
 - 规则和 Golden Dataset 由项目方提供，系统负责加载、引用、版本记录和评测执行。
 
-当前已完成 Phase 3 的同步食品质检 MVP：规则导入、确定性 Food Tools、食品 Skill、受控 LangGraph 工作流、MySQL 持久化、最小 FastAPI 接口和 Golden Dataset 回归。工作流仅固定编排规则加载、食品检查、风险聚合与报告生成；仍未实现 LLM、RAG、Redis/Celery、人审、Streamlit 或文案优化。
+当前已完成 Phase 4 的受控质检闭环基础：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、Elasticsearch 派生规则索引、BGE 混合检索、DeepSeek 结构化语义判断边界、受控 LangGraph 工作流、最小 FastAPI 接口和 Golden Dataset 回归。Redis/Celery、人审工作台、Streamlit Demo 与文案优化尚未实现。
 
 ## 技术栈
 
@@ -19,7 +19,8 @@
 - SQLAlchemy 2.x、Alembic、MySQL 8.0
 - LangGraph
 - pytest、ruff
-- Docker Compose（本阶段仅 MySQL）
+- Elasticsearch 8、硅基流动 BGE API、DeepSeek API
+- Docker Compose（MySQL、Elasticsearch）
 
 ## 环境准备
 
@@ -37,10 +38,10 @@ cp .env.example .env
 
 ## 本地启动方式（当前阶段）
 
-启动 MySQL：
+启动基础设施：
 
 ```bash
-docker compose up -d mysql
+docker compose up -d mysql elasticsearch
 docker compose ps
 ```
 
@@ -55,11 +56,17 @@ uv sync --all-groups
 ```bash
 uv run alembic upgrade head
 uv run python scripts/import_rules.py data/rules/food_rules.json
+uv run python scripts/sync_rules_to_es.py
 ```
+
+`sync_rules_to_es.py` 只从 MySQL 读取已启用的食品规则，并以 BGE 向量写入 Elasticsearch；MySQL 仍是规则唯一事实来源。执行前请在本机 `.env` 填写 BGE 配置。应用在需要语义质检时还需要 `DEEPSEEK_API_KEY`；缺少任一外部模型配置时，确定性质检仍会返回，但会标记降级并要求人工复核。
 
 启动同步 API：
 
 ```bash
+set -a
+source .env
+set +a
 uv run uvicorn app.main:app --reload
 ```
 
@@ -76,7 +83,7 @@ docker compose config
 
 ## 数据库与迁移
 
-MySQL 8.0 运行于本地 Docker，默认映射宿主机 `3307` 端口。所有 Schema 变更必须通过 Alembic migration 管理。测试使用独立的 `MYSQL_TEST_DATABASE`，不会写入开发库。
+MySQL 8.0 与 Elasticsearch 8 运行于本地 Docker；FastAPI、pytest 和后续 Streamlit 运行在宿主机。MySQL 默认映射宿主机 `3307` 端口，Elasticsearch 映射 `9200`。所有 Schema 变更必须通过 Alembic migration 管理。测试使用独立的 `MYSQL_TEST_DATABASE`，不会写入开发库。
 
 ## 后续开发流程
 
@@ -84,4 +91,4 @@ MySQL 8.0 运行于本地 Docker，默认映射宿主机 `3307` 端口。所有 
 2. 先确认或冻结涉及的 Contract。
 3. 按已批准 Milestone 实现，并为功能添加测试。
 4. 执行 pytest、ruff 与相关集成验证。
-5. 保持提交聚焦，且不提交敏感配置或业务真值数据。
+5. 保持提交聚焦，且不提交 `.env`、敏感配置或项目方业务真值数据。

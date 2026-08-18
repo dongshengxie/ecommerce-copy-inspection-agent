@@ -25,3 +25,13 @@ def test_settings_loads_phase_four_retrieval_and_model_configuration(
     assert settings.bge_reranker_model == "bge-reranker-v2-m3"
     assert settings.deepseek_api_key == "test-deepseek-key"
     assert settings.deepseek_model == "deepseek-chat"
+
+
+def test_settings_defaults_to_siliconflow_supported_bge_model_ids(monkeypatch) -> None:
+    monkeypatch.delenv("BGE_EMBEDDING_MODEL", raising=False)
+    monkeypatch.delenv("BGE_RERANKER_MODEL", raising=False)
+
+    settings = Settings.from_environment()
+
+    assert settings.bge_embedding_model == "BAAI/bge-m3"
+    assert settings.bge_reranker_model == "BAAI/bge-reranker-v2-m3"
