@@ -8,9 +8,16 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from agent.state.inspection import SemanticInspectionSkill
 from app.services.inspection import InspectionApplicationService
+from app.services.optimization import (
+    OptimizationApplicationService,
+    OptimizationConflictError,
+    OptimizationNotFoundError,
+)
 from contracts.models import ProductInput
+from contracts.optimization import OptimizationRequest, OptimizationResult
 from db.repositories.inspections import InspectionRepository
 from db.repositories.rules import RuleRepository
+from llm.copy_optimization import CopyOptimizationSkill
 
 
 class InspectionCreatedResponse(BaseModel):
@@ -59,10 +66,16 @@ def create_inspection_router(
     session_factory: sessionmaker[Session],
     *,
     semantic_inspection_skill: SemanticInspectionSkill | None = None,
+    copy_optimization_skill: CopyOptimizationSkill | None = None,
 ) -> APIRouter:
     router = APIRouter(prefix="/api/v2/inspections", tags=["inspections"])
     service = InspectionApplicationService(
         session_factory, semantic_inspection_skill=semantic_inspection_skill
+    )
+    optimization_service = OptimizationApplicationService(
+        session_factory,
+        copy_optimization_skill=copy_optimization_skill,
+        semantic_inspection_skill=semantic_inspection_skill,
     )
 
     @router.post("", response_model=InspectionCreatedResponse, status_code=status.HTTP_201_CREATED)
@@ -138,5 +151,14 @@ def create_inspection_router(
                 for rule in rules
             ],
         )
+
+    @router.post("/{task_id}/optimization", response_model=OptimizationResult)
+    def optimize_inspection(task_id: str, request: OptimizationRequest) -> OptimizationResult:
+        try:
+            return optimization_service.optimize(task_id, request)
+        except OptimizationNotFoundError as error:
+            raise HTTPException(status_code=404, detail=str(error)) from error
+        except OptimizationConflictError as error:
+            raise HTTPException(status_code=409, detail=str(error)) from error
 
     return router

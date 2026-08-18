@@ -1,6 +1,6 @@
 # Phase 2 同步质检 API
 
-当前仅支持食品类商品的同步质检。固定 LangGraph 工作流会先执行全部确定性检查；只有请求显式开启时，才会继续执行受控的规则检索与语义判断。Redis、Celery、异步队列和自动文案优化尚未实现。
+当前仅支持食品类商品的同步质检。固定 LangGraph 工作流会先执行全部确定性检查；只有请求显式开启时，才会继续执行受控的规则检索与语义判断。Redis、Celery、异步队列和自动文案优化尚未实现；文案优化仅可由用户显式请求。
 
 ## 启动
 
@@ -68,6 +68,7 @@ X-Semantic-Inspection: enabled
 | `GET` | `/api/v2/inspections/{task_id}/result` | 返回完整 `InspectionReport`，包括风险、Issue、复核标记和 Trace ID。 |
 | `GET` | `/api/v2/inspections/{task_id}/trace` | 返回脱敏后的 Tool/Skill 执行摘要和安全调用元数据。 |
 | `GET` | `/api/v2/inspections/{task_id}/rule-evidence` | 返回该报告 Issue 所引用的、任务执行时实际加载的规则版本。 |
+| `POST` | `/api/v2/inspections/{task_id}/optimization` | 对指定存在风险的文案字段执行一次显式优化和二次质检。 |
 
 未知任务或尚无报告时返回 `404`。
 
@@ -92,3 +93,27 @@ X-Semantic-Inspection: enabled
 ```
 
 系统按任务完成时记录的 `(rule_id, version)` 精确查询，即使当前规则已被禁用或已导入新版本，也不会替换历史任务的依据。通过的报告返回空 `rules` 数组。该接口不返回商品原文、规则无关字段或当前启用状态。
+
+## 显式文案优化
+
+`POST /api/v2/inspections/{task_id}/optimization` 只接受允许改写的文案字段；`attributes` 不可改写：
+
+```json
+{
+  "fields": ["description"]
+}
+```
+
+请求必须指向成功完成的质检任务，且所选字段必须存在 Issue。系统读取该任务绑定的历史规则和原始商品修订，生成最小改动候选文案后在内存中执行二次质检；不会修改源商品修订、源任务或源报告，也不会自动发布文案。
+
+生成结果只允许请求字段，必须保留原始标题/详情中的规格标识，且不得新增与已知配料、保质期、储存方式或产地冲突的显式表述。模型输出不合规时最多请求一次结构化修复；首次二次质检失败后最多再生成一版包含失败原因的候选文案。
+
+成功或已尝试但未通过的请求均返回 `200` 和 `OptimizationResult`：
+
+| `status` | 含义 |
+| --- | --- |
+| `success` | 候选文案通过二次质检。 |
+| `verification_failed` | 二次质检仍存在风险、降级或需要人工复核。 |
+| `failed` | 模型调用或受控输出校验失败。 |
+
+未知源任务返回 `404`；任务未成功或所选字段无 Issue 返回 `409`；字段为空、重复、包含 `attributes` 或其他非法 body 返回 `422`。优化 Trace 仅保存 Provider、Prompt/模型版本、Token、耗时、修复状态、步骤、尝试次数和错误类别，不保存完整 Prompt、原文或模型原始输出。

@@ -148,6 +148,15 @@ class InspectionRepository:
             return None
         return InspectionReport.model_validate(result.report_json)
 
+    def get_product_for_task(self, task_id: str) -> ProductInput | None:
+        task = self.get_task(task_id)
+        if task is None:
+            return None
+        revision = self._session.get(ProductRevisionModel, task.product_revision_id)
+        if revision is None:
+            return None
+        return ProductInput.model_validate(revision.payload_json)
+
     def get_task_rule_references(self, task_id: str) -> list[InspectionTaskRuleModel]:
         return list(
             self._session.scalars(
@@ -157,11 +166,17 @@ class InspectionRepository:
             )
         )
 
+    def add_traces(self, traces: list[TraceEvent]) -> None:
+        """Append safe workflow events to an existing task without committing."""
+        self._add_traces(traces)
+        self._session.flush()
+
     def list_trace_summaries(self, task_id: str) -> list[dict[str, object]]:
         """Return only API-safe trace fields, excluding raw inputs and model outputs."""
-        traces = self._session.scalars(
-            select(AgentTraceModel).where(AgentTraceModel.task_id == task_id)
+        traces = list(
+            self._session.scalars(select(AgentTraceModel).where(AgentTraceModel.task_id == task_id))
         )
+        traces.sort(key=self._trace_sort_key)
         return [
             {
                 "step_name": trace.step_name,
@@ -178,6 +193,18 @@ class InspectionRepository:
             }
             for trace in traces
         ]
+
+    @staticmethod
+    def _trace_sort_key(trace: AgentTraceModel) -> tuple[int, int, int]:
+        operation = trace.metadata_json.get("operation")
+        attempt = trace.metadata_json.get("attempt")
+        if operation in {"copy_optimization", "optimization_verification"}:
+            return (
+                1,
+                attempt if isinstance(attempt, int) else 0,
+                0 if operation == "copy_optimization" else 1,
+            )
+        return (0, 0, 0)
 
     def _require_task(self, task_id: str) -> InspectionTaskModel:
         task = self._session.get(InspectionTaskModel, task_id)

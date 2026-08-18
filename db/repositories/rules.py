@@ -56,9 +56,11 @@ class RuleRepository:
         records = self._session.scalars(statement).all()
         return [Rule.model_validate(record.content_json) for record in records]
 
-    def list_by_task_rule_references(self, task_id: str, rule_ids: set[str]) -> list[Rule]:
+    def list_by_task_rule_references(
+        self, task_id: str, rule_ids: set[str] | None = None
+    ) -> list[Rule]:
         """Load only the historically recorded rule ID/version pairs for one task."""
-        if not rule_ids:
+        if rule_ids == set():
             return []
         statement = (
             select(QualityRuleModel)
@@ -69,9 +71,10 @@ class RuleRepository:
             )
             .where(
                 InspectionTaskRuleModel.task_id == task_id,
-                InspectionTaskRuleModel.rule_id.in_(rule_ids),
             )
-            .order_by(QualityRuleModel.rule_id, QualityRuleModel.version)
         )
+        if rule_ids is not None:
+            statement = statement.where(InspectionTaskRuleModel.rule_id.in_(rule_ids))
+        statement = statement.order_by(QualityRuleModel.rule_id, QualityRuleModel.version)
         records = self._session.scalars(statement).all()
         return [Rule.model_validate(record.content_json) for record in records]

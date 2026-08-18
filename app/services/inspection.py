@@ -10,6 +10,7 @@ from app.config import Settings
 from contracts.models import InspectionReport, ProductInput, TraceEvent
 from db.repositories.inspections import InspectionRepository
 from db.repositories.rules import RuleRepository
+from llm.copy_optimization import CopyOptimizationSkill
 from llm.models import SemanticSkillResult
 from llm.providers import DeepSeekProvider
 from llm.semantic_risk import SemanticInspectionSkill as BoundedSemanticInspectionSkill
@@ -70,6 +71,20 @@ def create_semantic_inspection_skill(settings: Settings) -> SemanticInspectionSk
             ),
             prompt_version="1.0.0",
         ),
+    )
+
+
+def create_copy_optimization_skill(settings: Settings) -> CopyOptimizationSkill | None:
+    """Create the isolated copy-generation dependency at the application boundary."""
+    if not settings.deepseek_api_key:
+        return None
+    return CopyOptimizationSkill(
+        llm_provider=DeepSeekProvider(
+            client=httpx.Client(),
+            api_key=settings.deepseek_api_key,
+            model=settings.deepseek_model,
+        ),
+        prompt_version="1.0.0",
     )
 
 
