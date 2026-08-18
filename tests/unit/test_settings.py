@@ -35,3 +35,11 @@ def test_settings_defaults_to_siliconflow_supported_bge_model_ids(monkeypatch) -
 
     assert settings.bge_embedding_model == "BAAI/bge-m3"
     assert settings.bge_reranker_model == "BAAI/bge-reranker-v2-m3"
+
+
+def test_settings_defaults_to_current_deepseek_flash_model(monkeypatch) -> None:
+    monkeypatch.delenv("DEEPSEEK_MODEL", raising=False)
+
+    settings = Settings.from_environment()
+
+    assert settings.deepseek_model == "deepseek-v4-flash"

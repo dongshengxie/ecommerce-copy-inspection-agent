@@ -41,7 +41,7 @@ class Settings:
                 "BGE_RERANKER_MODEL", "BAAI/bge-reranker-v2-m3"
             ),
             deepseek_api_key=os.environ.get("DEEPSEEK_API_KEY", ""),
-            deepseek_model=os.environ.get("DEEPSEEK_MODEL", "deepseek-chat"),
+            deepseek_model=os.environ.get("DEEPSEEK_MODEL", "deepseek-v4-flash"),
         )
 
     def database_url(self, database_name: str | None = None) -> str:
