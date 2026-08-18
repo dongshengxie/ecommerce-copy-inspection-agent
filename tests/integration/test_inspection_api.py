@@ -4,11 +4,12 @@ import json
 from pathlib import Path
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, update
 from sqlalchemy.orm import sessionmaker
 
 from app.main import create_app
 from contracts.models import Rule
+from db.models.core import QualityRuleModel
 from db.repositories.rules import RuleRepository
 from llm.models import SemanticSkillResult
 
@@ -161,4 +162,87 @@ def test_inspection_api_uses_request_scoped_semantic_switch_and_safe_trace(
     }
     assert "raw_output" not in semantic_event["metadata"]
     assert "error_message" not in semantic_event["metadata"]
+    engine.dispose()
+
+
+def test_rule_evidence_returns_only_report_rules_at_original_version(
+    migrated_test_database: str,
+) -> None:
+    engine = create_engine(migrated_test_database)
+    session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+    rules = _load_rules()
+    with session_factory() as session:
+        RuleRepository(session).import_rules(rules)
+        session.commit()
+
+    client = TestClient(create_app(session_factory))
+    create_response = client.post("/api/v2/inspections", json=_case_payload("food_case_005"))
+    assert create_response.status_code == 201
+    task_id = create_response.json()["task_id"]
+
+    original_rule = next(rule for rule in rules if rule.rule_id == "food_health_002")
+    with session_factory() as session:
+        session.execute(
+            update(QualityRuleModel)
+            .where(
+                QualityRuleModel.rule_id == "food_health_002",
+                QualityRuleModel.version == "1.0.0",
+            )
+            .values(status="disabled")
+        )
+        RuleRepository(session).import_rules(
+            [
+                original_rule.model_copy(
+                    update={
+                        "version": "2.0.0",
+                        "rule_text": "新版本规则正文不应替换历史任务依据。",
+                    }
+                )
+            ]
+        )
+        session.commit()
+
+    response = client.get(f"/api/v2/inspections/{task_id}/rule-evidence")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "task_id": task_id,
+        "rules": [
+            {
+                "rule_id": "food_health_002",
+                "version": "1.0.0",
+                "field_scope": [
+                    "title",
+                    "selling_points",
+                    "description",
+                    "marketing_description",
+                ],
+                "risk_level": "medium",
+                "rule_text": "普通食品文案应避免未经依据支撑的保健或身体功能改善暗示。",
+                "rewrite_hint": "删除功能改善暗示，改为描述原料、口感或冲泡方式。",
+            }
+        ],
+    }
+    assert "2.0.0" not in response.text
+    engine.dispose()
+
+
+def test_rule_evidence_returns_empty_for_pass_report_and_404_for_unknown_task(
+    migrated_test_database: str,
+) -> None:
+    engine = create_engine(migrated_test_database)
+    session_factory = sessionmaker(bind=engine, expire_on_commit=False)
+    with session_factory() as session:
+        RuleRepository(session).import_rules(_load_rules())
+        session.commit()
+
+    client = TestClient(create_app(session_factory))
+    create_response = client.post("/api/v2/inspections", json=_case_payload("food_case_001"))
+    task_id = create_response.json()["task_id"]
+
+    assert client.get(f"/api/v2/inspections/{task_id}/rule-evidence").json() == {
+        "task_id": task_id,
+        "rules": [],
+    }
+    assert client.get("/api/v2/inspections/missing/rule-evidence").status_code == 404
     engine.dispose()

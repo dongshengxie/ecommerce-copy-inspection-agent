@@ -21,6 +21,8 @@ MySQL 8.0 在 Docker 中运行，宿主机通过 `MYSQL_PORT` 访问；默认端
 | `inspection_tasks` | 任务状态、触发来源、规则版本和错误摘要。 |
 | `inspection_results` | 自动风险、报告 JSON、复核标记和降级标记。 |
 | `inspection_issues` | 可检索 Issue、证据、规则引用与置信度。 |
+| `inspection_task_rules` | 一次成功质检实际加载的 `(rule_id, rule_version)` 集合，用于历史规则依据绑定。 |
+| `optimization_attempts` | 显式文案优化的独立尝试和验证结果；不修改原商品修订或原质检报告。 |
 | `agent_traces` | Skill/Tool 执行步骤、规则引用、决策、耗时和错误。 |
 
 `alembic_version` 是 Alembic 的迁移版本元数据表，不属于业务表。

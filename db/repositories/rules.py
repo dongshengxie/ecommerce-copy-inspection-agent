@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from contracts.models import Rule
-from db.models.core import QualityRuleModel
+from db.models.core import InspectionTaskRuleModel, QualityRuleModel
 
 
 class RuleRepository:
@@ -52,6 +52,26 @@ class RuleRepository:
                 QualityRuleModel.status == "enabled",
             )
             .order_by(QualityRuleModel.rule_id)
+        )
+        records = self._session.scalars(statement).all()
+        return [Rule.model_validate(record.content_json) for record in records]
+
+    def list_by_task_rule_references(self, task_id: str, rule_ids: set[str]) -> list[Rule]:
+        """Load only the historically recorded rule ID/version pairs for one task."""
+        if not rule_ids:
+            return []
+        statement = (
+            select(QualityRuleModel)
+            .join(
+                InspectionTaskRuleModel,
+                (InspectionTaskRuleModel.rule_id == QualityRuleModel.rule_id)
+                & (InspectionTaskRuleModel.rule_version == QualityRuleModel.version),
+            )
+            .where(
+                InspectionTaskRuleModel.task_id == task_id,
+                InspectionTaskRuleModel.rule_id.in_(rule_ids),
+            )
+            .order_by(QualityRuleModel.rule_id, QualityRuleModel.version)
         )
         records = self._session.scalars(statement).all()
         return [Rule.model_validate(record.content_json) for record in records]

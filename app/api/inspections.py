@@ -10,6 +10,7 @@ from agent.state.inspection import SemanticInspectionSkill
 from app.services.inspection import InspectionApplicationService
 from contracts.models import ProductInput
 from db.repositories.inspections import InspectionRepository
+from db.repositories.rules import RuleRepository
 
 
 class InspectionCreatedResponse(BaseModel):
@@ -38,6 +39,20 @@ class TraceEventResponse(BaseModel):
 class InspectionTraceResponse(BaseModel):
     task_id: str
     events: list[TraceEventResponse]
+
+
+class RuleEvidenceItemResponse(BaseModel):
+    rule_id: str
+    version: str
+    field_scope: list[str]
+    risk_level: str
+    rule_text: str
+    rewrite_hint: str
+
+
+class RuleEvidenceResponse(BaseModel):
+    task_id: str
+    rules: list[RuleEvidenceItemResponse]
 
 
 def create_inspection_router(
@@ -99,5 +114,29 @@ def create_inspection_router(
                 raise HTTPException(status_code=404, detail="质检任务不存在")
             events = repository.list_trace_summaries(task_id)
         return InspectionTraceResponse(task_id=task_id, events=events)
+
+    @router.get("/{task_id}/rule-evidence", response_model=RuleEvidenceResponse)
+    def get_rule_evidence(task_id: str) -> RuleEvidenceResponse:
+        with session_factory() as session:
+            inspection_repository = InspectionRepository(session)
+            report = inspection_repository.get_report(task_id)
+            if report is None:
+                raise HTTPException(status_code=404, detail="质检结果不存在")
+            rule_ids = {rule_id for issue in report.issues for rule_id in issue.rule_ids}
+            rules = RuleRepository(session).list_by_task_rule_references(task_id, rule_ids)
+        return RuleEvidenceResponse(
+            task_id=task_id,
+            rules=[
+                RuleEvidenceItemResponse(
+                    rule_id=rule.rule_id,
+                    version=rule.version,
+                    field_scope=rule.field_scope,
+                    risk_level=rule.risk_level.value,
+                    rule_text=rule.rule_text,
+                    rewrite_hint=rule.rewrite_hint,
+                )
+                for rule in rules
+            ],
+        )
 
     return router
