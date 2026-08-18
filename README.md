@@ -9,7 +9,7 @@
 - 优化由用户显式请求；审核完成后不会自动改写文案。
 - 规则和 Golden Dataset 由项目方提供，系统负责加载、引用、版本记录和评测执行。
 
-当前已完成 Phase 4 的受控质检闭环基础：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、Elasticsearch 派生规则索引、BGE 混合检索、DeepSeek 结构化语义判断边界、受控 LangGraph 工作流、最小 FastAPI 接口和 Golden Dataset 回归。Redis/Celery、人审工作台、Streamlit Demo 与文案优化尚未实现。
+当前已完成 Phase 5 的核心能力：规则导入、确定性 Food Tools、食品 Skill、MySQL 持久化、Elasticsearch 派生规则索引、BGE 混合检索、DeepSeek 结构化语义判断、受控 LangGraph 工作流、显式文案优化与二次质检、规则依据查询、Trace 查询，以及离线/实时评测 Runner。Redis/Celery、人审工作台与 Streamlit Demo 尚未实现。
 
 ## 技术栈
 
@@ -80,6 +80,44 @@ docker compose config
 ```
 
 启动后可访问 `http://127.0.0.1:8000/docs`。详细接口见 [docs/api.md](docs/api.md)，数据库说明见 [docs/database.md](docs/database.md)。
+
+## 评测
+
+项目方提供 Golden Dataset 和规则 JSON；系统只负责加载、执行、对比与输出指标，不生成业务真值。当前 10 条样例仅用于回归，正式验收建议至少提供 30 条、目标为 50–100 条已标注样例。
+
+默认离线评测不访问 MySQL、Elasticsearch、HTTP 或模型服务：
+
+```bash
+uv run python -m evaluation \
+  --dataset evaluation/datasets/food_golden_dataset.json \
+  --rules data/rules/food_rules.json \
+  --output-dir evaluation/results
+```
+
+实时评测必须先启动 FastAPI，并在 `.env` 中配置 `BGE_API_BASE_URL`、`BGE_API_KEY`、`BGE_EMBEDDING_MODEL`、`BGE_RERANKER_MODEL`、`DEEPSEEK_API_KEY` 和 `DEEPSEEK_MODEL`：
+
+```bash
+set -a
+source .env
+set +a
+uv run python -m evaluation \
+  --dataset evaluation/datasets/food_golden_dataset.json \
+  --rules data/rules/food_rules.json \
+  --live --api-base-url http://127.0.0.1:8000 \
+  --output-dir evaluation/results
+```
+
+候选版本对比必须指定同一 `dataset_version` 的基线结果：
+
+```bash
+uv run python -m evaluation \
+  --dataset evaluation/datasets/food_golden_dataset.json \
+  --rules data/rules/food_rules.json \
+  --candidate --baseline evaluation/results/<baseline>.json \
+  --output-dir evaluation/results
+```
+
+结果文件只保存标准化 Issue、指标、版本和安全 Trace 元数据；不会保存商品原文、完整 Prompt、原始模型输出或密钥。指标中的 `null` 表示该次运行没有相应分母，不代表 0 分。详细说明见 [docs/evaluation.md](docs/evaluation.md)。
 
 ## 数据库与迁移
 

@@ -13,3 +13,4 @@ htmlcov/
 .worktrees/
 worktrees/
 *.log
+evaluation/results/
