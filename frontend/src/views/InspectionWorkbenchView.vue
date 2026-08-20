@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 import AppSidebar from '../components/AppSidebar.vue'
 import FoodAttributesPanel from '../components/FoodAttributesPanel.vue'
+import EvidenceMarkedText, { type EvidenceMatch } from '../components/EvidenceMarkedText.vue'
 import InspectionRunState from '../components/InspectionRunState.vue'
+import InspectionSummary from '../components/InspectionSummary.vue'
+import IssueDetailPanel from '../components/IssueDetailPanel.vue'
+import IssueListPanel from '../components/IssueListPanel.vue'
 import ProductCopyPanel from '../components/ProductCopyPanel.vue'
 import WorkflowProgress from '../components/WorkflowProgress.vue'
 import { createEmptyFoodCopyForm, useWorkbenchStore, type FoodCopyForm } from '../stores/workbench'
@@ -12,6 +16,7 @@ const workbench = useWorkbenchStore()
 const form = ref<FoodCopyForm>(createEmptyFoodCopyForm())
 const semanticEnabled = ref(false)
 const activeTab = ref<'copy' | 'attributes'>('copy')
+const selectedIssueIndex = ref<number | null>(null)
 
 const canSubmit = computed(() => {
   const attributes = form.value.attributes
@@ -39,6 +44,17 @@ const statusState = computed(() => {
   if (workbench.phase === 'submitting' || workbench.phase === 'loading_result') return 'running'
   return 'editing'
 })
+const selectedIssue = computed(() => {
+  if (selectedIssueIndex.value === null) return null
+  return workbench.report?.issues[selectedIssueIndex.value] ?? null
+})
+
+watch(
+  () => workbench.report?.task_id,
+  () => {
+    selectedIssueIndex.value = workbench.report?.issues.length ? 0 : null
+  },
+)
 
 function updateCopy(value: FoodCopyForm): void {
   form.value = value
@@ -50,6 +66,17 @@ function updateAttributes(value: FoodCopyForm['attributes']): void {
 
 async function submit(): Promise<void> {
   await workbench.submit(form.value, semanticEnabled.value)
+}
+
+function evidenceMatches(field: string): EvidenceMatch[] {
+  return (workbench.report?.issues ?? [])
+    .map((issue, index) => ({ issue, index }))
+    .filter(({ issue }) => issue.field === field)
+    .map(({ issue, index }) => ({ evidence: issue.evidence_span, issueNumber: index + 1 }))
+}
+
+function attributeText(value: unknown): string {
+  return value === null || value === undefined || value === '' ? '—' : String(value)
 }
 </script>
 
@@ -97,7 +124,53 @@ async function submit(): Promise<void> {
               食品属性
             </button>
           </div>
-          <form @submit.prevent="submit">
+          <template v-if="workbench.phase === 'completed' && workbench.submittedCopy">
+            <section v-if="activeTab === 'copy'" class="copy-document" aria-label="已提交基础文案">
+              <div>
+                <h3>商品标题</h3>
+                <EvidenceMarkedText
+                  :text="workbench.submittedCopy.title"
+                  :matches="evidenceMatches('title')"
+                />
+              </div>
+              <div>
+                <h3>商品卖点</h3>
+                <p v-for="point in workbench.submittedCopy.selling_points" :key="point">
+                  <EvidenceMarkedText :text="point" :matches="evidenceMatches('selling_points')" />
+                </p>
+              </div>
+              <div>
+                <h3>商品详情</h3>
+                <p>
+                  <EvidenceMarkedText
+                    :text="workbench.submittedCopy.description"
+                    :matches="evidenceMatches('description')"
+                  />
+                </p>
+              </div>
+              <div>
+                <h3>营销描述</h3>
+                <p>
+                  <EvidenceMarkedText
+                    :text="workbench.submittedCopy.marketing_description"
+                    :matches="evidenceMatches('marketing_description')"
+                  />
+                </p>
+              </div>
+            </section>
+            <dl v-else class="attributes-document" aria-label="已提交食品属性">
+              <template v-for="(value, key) in workbench.submittedCopy.attributes" :key="key">
+                <dt>{{ key }}</dt>
+                <dd>
+                  <EvidenceMarkedText
+                    :text="attributeText(value)"
+                    :matches="evidenceMatches(`attributes.${String(key)}`)"
+                  />
+                </dd>
+              </template>
+            </dl>
+          </template>
+          <form v-else @submit.prevent="submit">
             <ProductCopyPanel
               v-if="activeTab === 'copy'"
               :model-value="form"
@@ -125,9 +198,8 @@ async function submit(): Promise<void> {
         </article>
 
         <article class="workbench-panel panel-issues" data-testid="issue-panel">
-          <h2>问题与证据</h2>
-          <p class="panel-eyebrow">质检结果</p>
           <InspectionRunState
+            v-if="workbench.phase !== 'editing' && workbench.phase !== 'completed'"
             class="run-state"
             :phase="workbench.phase"
             :error-message="workbench.errorMessage"
@@ -136,24 +208,28 @@ async function submit(): Promise<void> {
             <strong>等待文案提交</strong>
             <p>提交食品文案后，这里将显示来自质检报告的风险问题与证据定位。</p>
           </div>
-          <div v-else-if="workbench.phase === 'completed'" class="state-placeholder">
-            <strong>质检报告已获取</strong>
-            <p>问题筛选、数字证据定位与任务级复核结论将在下一步呈现。</p>
-          </div>
+          <IssueListPanel
+            v-else-if="workbench.report"
+            :issues="workbench.report.issues"
+            :selected-index="selectedIssueIndex"
+            @select="selectedIssueIndex = $event"
+          />
         </article>
 
         <article class="workbench-panel panel-detail" data-testid="detail-panel">
-          <h2>问题详情与优化</h2>
-          <p class="panel-eyebrow">规则依据 · 显式操作</p>
-          <div class="state-placeholder">
-            <strong v-if="workbench.phase === 'completed'">请选择一个问题</strong>
-            <strong v-else>等待质检结果</strong>
-            <p>
-              这里仅展示后端返回的规则依据和用户明确请求的优化结果，不自动生成或采纳修改。
-            </p>
+          <IssueDetailPanel
+            v-if="workbench.report"
+            :issue="selectedIssue"
+            :issue-number="selectedIssueIndex === null ? null : selectedIssueIndex + 1"
+            :rules="workbench.ruleEvidence?.rules ?? []"
+          />
+          <div v-else class="state-placeholder">
+            <strong>等待质检结果</strong>
+            <p>这里仅展示后端返回的规则依据和用户明确请求的优化结果，不自动生成或采纳修改。</p>
           </div>
         </article>
       </section>
+      <InspectionSummary v-if="workbench.report" :report="workbench.report" />
     </main>
   </div>
 </template>
