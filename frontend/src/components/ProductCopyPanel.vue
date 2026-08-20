@@ -15,7 +15,6 @@ function updateField(field: CopyField, event: Event): void {
 
 <template>
   <section aria-label="基础文案">
-    <h2>基础文案</h2>
     <label>
       商品标题
       <input

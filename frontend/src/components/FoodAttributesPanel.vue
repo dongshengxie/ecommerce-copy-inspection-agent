@@ -22,7 +22,6 @@ function updateField(field: AttributeField, event: Event): void {
 
 <template>
   <section aria-label="食品属性">
-    <h2>食品属性</h2>
     <label>
       配料
       <input

@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import WorkbenchPlaceholderView from '../views/WorkbenchPlaceholderView.vue'
+import InspectionWorkbenchView from '../views/InspectionWorkbenchView.vue'
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -8,7 +8,7 @@ export const router = createRouter({
     {
       path: '/',
       name: 'workbench',
-      component: WorkbenchPlaceholderView,
+      component: InspectionWorkbenchView,
     },
   ],
 })

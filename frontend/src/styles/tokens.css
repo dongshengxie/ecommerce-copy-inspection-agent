@@ -1,0 +1,19 @@
+:root {
+  --ink-950: #0e1d37;
+  --ink-900: #17212b;
+  --ink-700: #405061;
+  --mist-100: #e8ecef;
+  --paper: #fafcfc;
+  --line: #d9e0e5;
+  --accent: #3e4de8;
+  --accent-soft: #eef0ff;
+  --risk: #d56d3a;
+  --risk-soft: #fff1eb;
+  --success: #6c8e7c;
+  --success-soft: #edf7f0;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --shadow-panel: 0 12px 28px rgb(23 33 43 / 6%);
+  --font-ui: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+  --font-data: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
