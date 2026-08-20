@@ -10,6 +10,7 @@ const apiMock = vi.hoisted(() => ({
   getResult: vi.fn(),
   getRuleEvidence: vi.fn(),
   getTrace: vi.fn(),
+  requestOptimization: vi.fn(),
 }))
 
 vi.mock('../api/inspections', () => ({ api: apiMock }))
@@ -35,7 +36,30 @@ const report: InspectionReport = {
   automated_risk_level: 'medium',
   review_required: false,
   review_reasons: [],
-  issues: [],
+  issues: [
+    {
+      field: 'title',
+      issue_type: '绝对化表达',
+      risk_level: 'medium',
+      evidence_span: '最佳',
+      evidence: '最佳',
+      rule_ids: ['food-copy-001'],
+      source: ['deterministic'],
+      confidence: 0.8,
+      suggestion: '调整为可验证的产品描述。',
+    },
+    {
+      field: 'description',
+      issue_type: '绝对化表达',
+      risk_level: 'medium',
+      evidence_span: '最佳',
+      evidence: '最佳',
+      rule_ids: ['food-copy-001'],
+      source: ['deterministic'],
+      confidence: 0.8,
+      suggestion: '调整为可验证的产品描述。',
+    },
+  ],
   degradation_flags: [],
   trace_id: 'trace-1',
 }
@@ -44,20 +68,31 @@ describe('workbench store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
-    apiMock.submitWorkbenchInspection.mockResolvedValue({
-      task_id: 'task-1',
+    apiMock.submitWorkbenchInspection.mockImplementation(async () => ({
+      task_id: `task-${apiMock.submitWorkbenchInspection.mock.calls.length}`,
       status: 'success',
-      result_url: '/api/v2/inspections/task-1/result',
-    })
-    apiMock.getInspection.mockResolvedValue({
-      task_id: 'task-1',
+      result_url: '/api/v2/inspections/task/result',
+    }))
+    apiMock.getInspection.mockImplementation(async (taskId: string) => ({
+      task_id: taskId,
       status: 'success',
       trigger_source: 'vue_workbench',
       rule_version: 'food-v1',
+    }))
+    apiMock.getResult.mockImplementation(async (taskId: string) => ({ ...report, task_id: taskId }))
+    apiMock.getRuleEvidence.mockImplementation(async (taskId: string) => ({ task_id: taskId, rules: [] }))
+    apiMock.getTrace.mockImplementation(async (taskId: string) => ({ task_id: taskId, events: [] }))
+    apiMock.requestOptimization.mockResolvedValue({
+      optimization_id: 'optimization-1',
+      source_task_id: 'task-1',
+      status: 'success',
+      requested_fields: ['title'],
+      optimized_fields: { title: '茉莉花茶袋泡茶' },
+      referenced_issues: [],
+      referenced_rule_ids: [],
+      verification_report: report,
+      failure_reason: null,
     })
-    apiMock.getResult.mockResolvedValue(report)
-    apiMock.getRuleEvidence.mockResolvedValue({ task_id: 'task-1', rules: [] })
-    apiMock.getTrace.mockResolvedValue({ task_id: 'task-1', events: [] })
   })
 
   it('keeps the submitted copy in memory while loading its inspection report', async () => {
@@ -86,5 +121,100 @@ describe('workbench store', () => {
     expect(store.submittedCopy?.description).toBe(foodForm.description)
     expect(store.phase).toBe('failed')
     expect(store.errorMessage).toBe('网络连接异常或请求超时，请稍后重试。')
+  })
+
+  it('requests optimization only after an inspection task exists', async () => {
+    const store = useWorkbenchStore()
+    await store.submit(foodForm, false)
+
+    await store.requestOptimization('task-1', ['title'])
+
+    expect(apiMock.requestOptimization).toHaveBeenCalledWith('task-1', ['title'])
+    expect(store.optimization?.status).toBe('success')
+  })
+
+  it('rejects optimization requests that do not match the active task and reported fields', async () => {
+    const store = useWorkbenchStore()
+    await store.submit(foodForm, false)
+
+    await store.requestOptimization('task-other', ['title'])
+    await store.requestOptimization('task-1', ['marketing_description'])
+
+    expect(apiMock.requestOptimization).not.toHaveBeenCalled()
+    expect(store.optimization).toBeNull()
+  })
+
+  it('ignores an optimization response that becomes stale after a new inspection submission', async () => {
+    const store = useWorkbenchStore()
+    await store.submit(foodForm, false)
+
+    let resolveOptimization: ((value: unknown) => void) | undefined
+    apiMock.requestOptimization.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveOptimization = resolve
+        }),
+    )
+
+    const staleRequest = store.requestOptimization('task-1', ['title'])
+    await store.submit(foodForm, false)
+    resolveOptimization?.({
+      optimization_id: 'optimization-stale',
+      source_task_id: 'task-1',
+      status: 'success',
+      requested_fields: ['title'],
+      optimized_fields: { title: '旧任务文案' },
+      referenced_issues: [],
+      referenced_rule_ids: [],
+      verification_report: report,
+      failure_reason: null,
+    })
+    await staleRequest
+
+    expect(store.task?.task_id).toBe('task-2')
+    expect(store.optimization).toBeNull()
+    expect(store.optimizing).toBe(false)
+  })
+
+  it('rejects an optimization response that does not belong to the submitted task and fields', async () => {
+    apiMock.requestOptimization.mockResolvedValueOnce({
+      optimization_id: 'optimization-mismatched',
+      source_task_id: 'task-other',
+      status: 'success',
+      requested_fields: ['description'],
+      optimized_fields: { description: '不应展示的文案' },
+      referenced_issues: [],
+      referenced_rule_ids: [],
+      verification_report: report,
+      failure_reason: null,
+    })
+    const store = useWorkbenchStore()
+    await store.submit(foodForm, false)
+
+    await store.requestOptimization('task-1', ['title'])
+
+    expect(store.optimization).toBeNull()
+    expect(store.optimizationErrorMessage).toBe('服务返回结果异常，请稍后重试。')
+  })
+
+  it('rejects a response whose requested fields contain duplicates instead of the submitted set', async () => {
+    apiMock.requestOptimization.mockResolvedValueOnce({
+      optimization_id: 'optimization-duplicate-fields',
+      source_task_id: 'task-1',
+      status: 'success',
+      requested_fields: ['title', 'title'],
+      optimized_fields: { title: '不应展示的文案' },
+      referenced_issues: [],
+      referenced_rule_ids: [],
+      verification_report: report,
+      failure_reason: null,
+    })
+    const store = useWorkbenchStore()
+    await store.submit(foodForm, false)
+
+    await store.requestOptimization('task-1', ['title', 'description'])
+
+    expect(store.optimization).toBeNull()
+    expect(store.optimizationErrorMessage).toBe('服务返回结果异常，请稍后重试。')
   })
 })

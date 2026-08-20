@@ -8,7 +8,9 @@ import InspectionRunState from '../components/InspectionRunState.vue'
 import InspectionSummary from '../components/InspectionSummary.vue'
 import IssueDetailPanel from '../components/IssueDetailPanel.vue'
 import IssueListPanel from '../components/IssueListPanel.vue'
+import OptimizationPanel from '../components/OptimizationPanel.vue'
 import ProductCopyPanel from '../components/ProductCopyPanel.vue'
+import TraceSummary from '../components/TraceSummary.vue'
 import WorkflowProgress from '../components/WorkflowProgress.vue'
 import { createEmptyFoodCopyForm, useWorkbenchStore, type FoodCopyForm } from '../stores/workbench'
 
@@ -223,6 +225,11 @@ function attributeText(value: unknown): string {
             :issue-number="selectedIssueIndex === null ? null : selectedIssueIndex + 1"
             :rules="workbench.ruleEvidence?.rules ?? []"
           />
+          <OptimizationPanel
+            v-if="workbench.report && workbench.task"
+            :task-id="workbench.task.task_id"
+            :report="workbench.report"
+          />
           <div v-else class="state-placeholder">
             <strong>等待质检结果</strong>
             <p>这里仅展示后端返回的规则依据和用户明确请求的优化结果，不自动生成或采纳修改。</p>
@@ -230,6 +237,11 @@ function attributeText(value: unknown): string {
         </article>
       </section>
       <InspectionSummary v-if="workbench.report" :report="workbench.report" />
+      <TraceSummary
+        v-if="workbench.trace && workbench.report"
+        :trace="workbench.trace"
+        :degradation-flags="workbench.report.degradation_flags"
+      />
     </main>
   </div>
 </template>

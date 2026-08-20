@@ -8,8 +8,10 @@ import type {
   FoodWorkbenchSubmission,
   InspectionReport,
   InspectionTask,
+  OptimizationResult,
   RuleEvidenceResponse,
   SafeTraceResponse,
+  WritableCopyField,
 } from '../contracts/inspection'
 
 export type WorkbenchPhase = 'editing' | 'submitting' | 'loading_result' | 'completed' | 'failed'
@@ -48,6 +50,11 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   const ruleEvidence = ref<RuleEvidenceResponse | null>(null)
   const trace = ref<SafeTraceResponse | null>(null)
   const errorMessage = ref<string | null>(null)
+  const optimization = ref<OptimizationResult | null>(null)
+  const optimizing = ref(false)
+  const optimizationErrorMessage = ref<string | null>(null)
+  const optimizationRequestedFields = ref<WritableCopyField[]>([])
+  let optimizationRequestGeneration = 0
 
   async function submit(form: FoodCopyForm, semanticEnabled: boolean): Promise<void> {
     if (phase.value === 'submitting' || phase.value === 'loading_result') {
@@ -61,6 +68,11 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     report.value = null
     ruleEvidence.value = null
     trace.value = null
+    optimization.value = null
+    optimizing.value = false
+    optimizationErrorMessage.value = null
+    optimizationRequestedFields.value = []
+    optimizationRequestGeneration += 1
     phase.value = 'submitting'
 
     try {
@@ -80,6 +92,84 @@ export const useWorkbenchStore = defineStore('workbench', () => {
   function returnToEditing(): void {
     phase.value = 'editing'
     errorMessage.value = null
+    optimization.value = null
+    optimizing.value = false
+    optimizationErrorMessage.value = null
+    optimizationRequestedFields.value = []
+    optimizationRequestGeneration += 1
+  }
+
+  async function requestOptimization(taskId: string, fields: WritableCopyField[]): Promise<void> {
+    if (optimizing.value || !isActiveOptimizationRequest(taskId, fields)) {
+      return
+    }
+
+    const requestGeneration = ++optimizationRequestGeneration
+    const requestFields = [...fields]
+    optimizing.value = true
+    optimization.value = null
+    optimizationErrorMessage.value = null
+    optimizationRequestedFields.value = requestFields
+
+    try {
+      const result = await api.requestOptimization(taskId, requestFields)
+      if (isCurrentOptimizationRequest(requestGeneration, taskId)) {
+        if (isOptimizationResponseForRequest(result, taskId, requestFields)) {
+          optimization.value = result
+        } else {
+          optimizationRequestedFields.value = []
+          optimizationErrorMessage.value = '服务返回结果异常，请稍后重试。'
+        }
+      }
+    } catch (error) {
+      if (isCurrentOptimizationRequest(requestGeneration, taskId)) {
+        optimizationErrorMessage.value = safeOptimizationErrorMessage(error)
+      }
+    } finally {
+      if (isCurrentOptimizationRequest(requestGeneration, taskId)) {
+        optimizing.value = false
+      }
+    }
+  }
+
+  function isActiveOptimizationRequest(taskId: string, fields: WritableCopyField[]): boolean {
+    if (
+      phase.value !== 'completed' ||
+      task.value?.task_id !== taskId ||
+      report.value?.task_id !== taskId ||
+      fields.length === 0 ||
+      new Set(fields).size !== fields.length
+    ) {
+      return false
+    }
+
+    const availableFields = new Set(
+      report.value.issues
+        .map((issue) => issue.field)
+        .filter(isWritableCopyField),
+    )
+    return fields.every((field) => availableFields.has(field))
+  }
+
+  function isCurrentOptimizationRequest(requestGeneration: number, taskId: string): boolean {
+    return (
+      requestGeneration === optimizationRequestGeneration &&
+      task.value?.task_id === taskId &&
+      report.value?.task_id === taskId
+    )
+  }
+
+  function isOptimizationResponseForRequest(
+    result: OptimizationResult,
+    taskId: string,
+    requestFields: WritableCopyField[],
+  ): boolean {
+    return (
+      result.source_task_id === taskId &&
+      result.requested_fields.length === requestFields.length &&
+      new Set(result.requested_fields).size === result.requested_fields.length &&
+      result.requested_fields.every((field) => requestFields.includes(field))
+    )
   }
 
   return {
@@ -90,7 +180,12 @@ export const useWorkbenchStore = defineStore('workbench', () => {
     ruleEvidence,
     trace,
     errorMessage,
+    optimization,
+    optimizing,
+    optimizationErrorMessage,
+    optimizationRequestedFields,
     submit,
+    requestOptimization,
     returnToEditing,
   }
 })
@@ -114,4 +209,20 @@ function safeErrorMessage(error: unknown): string {
     return error.message
   }
   return '质检请求失败，请稍后重试。'
+}
+
+function safeOptimizationErrorMessage(error: unknown): string {
+  if (error instanceof ApiClientError) {
+    return error.message
+  }
+  return '优化请求失败，请稍后重试。'
+}
+
+function isWritableCopyField(field: string): field is WritableCopyField {
+  return (
+    field === 'title' ||
+    field === 'selling_points' ||
+    field === 'description' ||
+    field === 'marketing_description'
+  )
 }
