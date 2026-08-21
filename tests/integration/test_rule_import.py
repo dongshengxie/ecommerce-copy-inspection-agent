@@ -20,7 +20,7 @@ def test_rule_import_is_idempotent_and_reads_enabled_food_rules_in_id_order(
 ) -> None:
     repository = RuleRepository(db_session)
 
-    assert repository.import_rules(_load_rules()) == 10
+    assert repository.import_rules(_load_rules()) == 25
     assert repository.import_rules(_load_rules()) == 0
 
     enabled_rules = repository.list_enabled_food_rules()

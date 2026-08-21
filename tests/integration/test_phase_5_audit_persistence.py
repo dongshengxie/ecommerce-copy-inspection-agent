@@ -52,7 +52,7 @@ def test_completed_task_keeps_exact_loaded_rule_version_after_rule_is_disabled(
         session.commit()
         references = InspectionRepository(session).get_task_rule_references(report.task_id)
 
-    assert ("food_health_002", "1.0.0") in {
+    assert ("food_health_002", "1.1.0") in {
         (reference.rule_id, reference.rule_version) for reference in references
     }
     engine.dispose()

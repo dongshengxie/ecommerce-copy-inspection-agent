@@ -186,7 +186,7 @@ def test_rule_evidence_returns_only_report_rules_at_original_version(
             update(QualityRuleModel)
             .where(
                 QualityRuleModel.rule_id == "food_health_002",
-                QualityRuleModel.version == "1.0.0",
+                QualityRuleModel.version == original_rule.version,
             )
             .values(status="disabled")
         )
@@ -210,7 +210,7 @@ def test_rule_evidence_returns_only_report_rules_at_original_version(
         "rules": [
             {
                 "rule_id": "food_health_002",
-                "version": "1.0.0",
+                "version": original_rule.version,
                 "field_scope": [
                     "title",
                     "selling_points",

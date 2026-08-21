@@ -54,7 +54,7 @@ def test_rule_document_projects_only_versioned_rule_content() -> None:
 
     document = RuleIndexDocument.from_rule(rule, [0.125] * 1024)
 
-    assert document.document_id == "food_claim_001:1.0.0"
+    assert document.document_id == "food_claim_001:1.1.0"
     assert document.category == "食品"
     assert document.status == "enabled"
     assert "普通食品文案不得明示或暗示疾病治疗效果。" in document.retrieval_text
@@ -83,8 +83,8 @@ def test_sync_upserts_each_rule_once_and_creates_1024_vector_mapping() -> None:
         "index": True,
         "similarity": "cosine",
     }
-    assert first_count == 10
-    assert second_count == 10
-    assert len(client.documents) == 10
-    indexed_rule = client.documents[("food_rules_v1", "food_claim_001:1.0.0")]
+    assert first_count == 25
+    assert second_count == 25
+    assert len(client.documents) == 25
+    indexed_rule = client.documents[("food_rules_v1", "food_claim_001:1.1.0")]
     assert indexed_rule["rule_id"] == "food_claim_001"

@@ -59,22 +59,27 @@ def test_food_seed_data_is_cross_referenced_and_evidence_grounded() -> None:
     rules = _load_json(RULES_PATH)
     cases = _load_json(CASES_PATH)
 
-    assert len(rules) == 10
-    assert len(cases) == 10
+    assert len(rules) == 25
+    assert len(cases) == 61
     assert all(set(rule) == RULE_KEYS for rule in rules)
     assert {rule["category"] for rule in rules} == {"食品"}
+    assert {rule["version"] for rule in rules} == {"1.1.0"}
     assert all(rule["field_scope"] for rule in rules)
     assert all(rule["status"] == "enabled" for rule in rules)
 
     rule_ids = {rule["rule_id"] for rule in rules}
     assert len(rule_ids) == len(rules)
     assert Counter(case["expected_risk_level"] for case in cases) == {
-        "pass": 2,
-        "low": 2,
-        "medium": 3,
-        "high": 3,
+        "pass": 9,
+        "low": 8,
+        "medium": 31,
+        "high": 13,
     }
+    assert {case["dataset_version"] for case in cases} == {"1.1.0"}
     assert len({case["case_id"] for case in cases}) == len(cases)
+    assert {f"food_case_{index:03d}" for index in range(1, 11)} <= {
+        case["case_id"] for case in cases
+    }
 
     for case in cases:
         assert set(case) == CASE_KEYS
@@ -94,4 +99,4 @@ def test_food_seed_data_is_cross_referenced_and_evidence_grounded() -> None:
 def test_food_seed_data_is_owner_confirmed() -> None:
     cases = _load_json(CASES_PATH)
 
-    assert {case["notes"] for case in cases} == {"项目方已确认的 v1.0 基线"}
+    assert {case["notes"] for case in cases} == {"项目方已确认的 v1.1 基线"}

@@ -1,7 +1,7 @@
 [
   {
     "rule_id": "food_claim_001",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "selling_points", "description", "marketing_description"],
     "issue_type": "医疗功效宣称",
@@ -11,11 +11,11 @@
     "bad_examples": ["治疗失眠", "降血糖", "失眠克星"],
     "rewrite_hint": "改为客观描述配料、口味、规格或食用场景。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_health_002",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "selling_points", "description", "marketing_description"],
     "issue_type": "保健功能暗示",
@@ -25,11 +25,11 @@
     "bad_examples": ["改善睡眠", "帮助减肥", "调理肠胃"],
     "rewrite_hint": "删除功能改善暗示，改为描述原料、口感或冲泡方式。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_absolute_003",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "selling_points", "description", "marketing_description"],
     "issue_type": "绝对化安全承诺",
@@ -39,11 +39,11 @@
     "bad_examples": ["100%安全", "零风险", "绝无副作用"],
     "rewrite_hint": "删除绝对化承诺，改为客观说明配料和产品信息。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_audience_004",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "selling_points", "description", "marketing_description"],
     "issue_type": "适用人群泛化",
@@ -53,11 +53,11 @@
     "bad_examples": ["人人适用", "全家老少都能吃", "孕妇儿童老人均适宜"],
     "rewrite_hint": "删除泛化的适用人群表述，保留客观的食用建议。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_attribute_005",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["attributes"],
     "issue_type": "配料信息缺失",
@@ -67,11 +67,11 @@
     "bad_examples": ["ingredients 为空"],
     "rewrite_hint": "补充与商品实际情况一致的配料信息。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_attribute_006",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["attributes"],
     "issue_type": "保质期信息缺失",
@@ -81,11 +81,11 @@
     "bad_examples": ["shelf_life 为空"],
     "rewrite_hint": "补充与商品实际情况一致的保质期信息。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_attribute_007",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["attributes"],
     "issue_type": "储存方式信息缺失",
@@ -95,11 +95,11 @@
     "bad_examples": ["storage_method 为空"],
     "rewrite_hint": "补充与商品实际情况一致的储存方式。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_attribute_008",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["attributes"],
     "issue_type": "产地信息缺失",
@@ -109,11 +109,11 @@
     "bad_examples": ["origin 为空"],
     "rewrite_hint": "补充与商品实际情况一致的产地信息。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_spec_009",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "description", "attributes"],
     "issue_type": "规格信息不一致",
@@ -123,11 +123,11 @@
     "bad_examples": ["标题 500g，属性 250g", "详情 12 袋，属性 10 袋"],
     "rewrite_hint": "核对标题、详情和属性后，统一为商品实际规格。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
   },
   {
     "rule_id": "food_prevention_010",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "category": "食品",
     "field_scope": ["title", "selling_points", "description", "marketing_description"],
     "issue_type": "疾病预防暗示",
@@ -137,6 +137,216 @@
     "bad_examples": ["预防癌症", "防三高", "远离感冒"],
     "rewrite_hint": "删除疾病预防暗示，改为客观描述产品风味和规格。",
     "status": "enabled",
-    "effective_at": "2026-08-15T00:00:00Z"
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_comparison_011",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "无依据比较性表述",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免使用缺少可核验依据的排他性比较或排名表述。",
+    "bad_examples": ["全网第一", "最好吃", "行业第一"],
+    "rewrite_hint": "删除排名或排他性比较，改为客观描述风味、工艺或规格。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_additive_012",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "绝对化成分承诺",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免作出无法由商品信息支持的绝对化成分承诺。",
+    "bad_examples": ["绝不含添加剂", "无任何添加", "零添加任何物质"],
+    "rewrite_hint": "删除绝对化成分承诺，改为与配料信息一致的客观描述。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_origin_claim_013",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "产地背书暗示",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免缺少商品属性支持的产地背书或排他性来源表述。",
+    "bad_examples": ["原产地直供", "唯一产区", "核心产区认证"],
+    "rewrite_hint": "改为与产地属性一致的客观产地描述。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_certification_014",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "认证背书表述",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免使用未在商品信息中说明依据的认证或官方背书表述。",
+    "bad_examples": ["有机认证", "官方认证", "国家级认证"],
+    "rewrite_hint": "删除无法核验的认证背书，或补充可核验的商品信息。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_urgency_015",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "不可核验紧迫性营销",
+    "risk_level": "low",
+    "rule_strength": "normal",
+    "rule_text": "食品营销描述应避免使用无法核验的极端时效或价格变化承诺。",
+    "bad_examples": ["今日不买永远涨价", "最后一分钟", "错过再无"],
+    "rewrite_hint": "改为明确、可核验的活动时间和优惠条件。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_social_proof_016",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "不可核验销量评价",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免使用无法核验的销量、抢购或好评数据。",
+    "bad_examples": ["销量破亿", "万人抢购", "好评100%"],
+    "rewrite_hint": "删除无法核验的数据表述，改为产品本身的客观信息。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_weight_017",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "减重效果暗示",
+    "risk_level": "medium",
+    "rule_strength": "strong",
+    "rule_text": "普通食品文案应避免直接承诺减重、燃脂或塑形效果。",
+    "bad_examples": ["躺着瘦", "燃脂瘦身", "吃出小蛮腰"],
+    "rewrite_hint": "删除减重效果暗示，改为描述风味、配料或食用方式。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_detox_018",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "排毒通便功效宣称",
+    "risk_level": "high",
+    "rule_strength": "strong",
+    "rule_text": "普通食品文案不得明示或暗示排毒、清肠或通便效果。",
+    "bad_examples": ["排毒清肠", "通便神器", "宿便清空"],
+    "rewrite_hint": "删除功效宣称，改为描述原料、口感或冲泡方式。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_disease_019",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "疾病相关功效暗示",
+    "risk_level": "high",
+    "rule_strength": "strong",
+    "rule_text": "普通食品文案不得以疾病名称作效果或人群改善暗示。",
+    "bad_examples": ["抗癌", "抗炎", "糖尿病人福音"],
+    "rewrite_hint": "删除疾病相关暗示，改为客观描述产品信息。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_blood_020",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "指标改善功效宣称",
+    "risk_level": "high",
+    "rule_strength": "strong",
+    "rule_text": "普通食品文案不得直接承诺血压、血脂或血糖指标改善效果。",
+    "bad_examples": ["降血压", "降血脂", "稳定血糖"],
+    "rewrite_hint": "删除指标改善功效宣称，改为客观描述产品信息。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_sleep_021",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "睡眠改善暗示",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "普通食品文案应避免直接承诺助眠、安神或改善睡眠感受。",
+    "bad_examples": ["助眠安神", "睡眠更香", "一觉到天亮"],
+    "rewrite_hint": "删除睡眠改善暗示，改为描述适合的饮用时间或风味。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_meal_022",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "替代正餐承诺",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免以绝对方式承诺可替代正餐或覆盖全天营养。",
+    "bad_examples": ["一餐顶三餐", "代替全天正餐", "一包满足全天营养"],
+    "rewrite_hint": "删除替代正餐承诺，改为说明食用场景和实际规格。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_storage_claim_023",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "储存条件绝对化承诺",
+    "risk_level": "low",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免使用与商品储存属性难以核对的绝对化储存承诺。",
+    "bad_examples": ["永不变质", "无需任何保存", "怎么放都新鲜"],
+    "rewrite_hint": "改为与储存方式属性一致的客观保存建议。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_quantity_024",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "夸张数量营销",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免使用无法与商品规格核对的夸张数量或赠送承诺。",
+    "bad_examples": ["买一送十", "十倍容量", "一盒吃一年"],
+    "rewrite_hint": "改为与实际规格和活动条件一致的说明。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
+  },
+  {
+    "rule_id": "food_immediate_025",
+    "version": "1.1.0",
+    "category": "食品",
+    "field_scope": ["title", "selling_points", "description", "marketing_description"],
+    "issue_type": "即时效果承诺",
+    "risk_level": "medium",
+    "rule_strength": "normal",
+    "rule_text": "食品文案应避免承诺食用后立即产生特定身体或状态效果。",
+    "bad_examples": ["吃了就见效", "立刻精神百倍", "马上不饿"],
+    "rewrite_hint": "删除即时效果承诺，改为描述口感、配料或食用建议。",
+    "status": "enabled",
+    "effective_at": "2026-08-21T00:00:00Z"
   }
 ]

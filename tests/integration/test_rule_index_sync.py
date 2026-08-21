@@ -39,6 +39,6 @@ def test_real_elasticsearch_index_is_idempotent() -> None:
 
         mapping = client.indices.get_mapping(index=INDEX_NAME)[INDEX_NAME]["mappings"]
         assert mapping["properties"]["retrieval_vector"]["dims"] == 1024
-        assert client.count(index=INDEX_NAME)["count"] == 10
+        assert client.count(index=INDEX_NAME)["count"] == 25
     finally:
         client.indices.delete(index=INDEX_NAME, ignore_unavailable=True)

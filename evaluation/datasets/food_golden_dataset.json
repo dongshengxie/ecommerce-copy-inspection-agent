@@ -1,13 +1,16 @@
 [
   {
     "case_id": "food_case_001",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_001",
       "product_revision": 1,
       "category": "食品",
       "title": "茉莉花茶袋泡茶 30g",
-      "selling_points": ["茉莉花香", "独立袋泡"],
+      "selling_points": [
+        "茉莉花香",
+        "独立袋泡"
+      ],
       "description": "配料为绿茶、茉莉花；清香口感，适合日常冲泡饮用。",
       "attributes": {
         "ingredients": "绿茶、茉莉花",
@@ -21,17 +24,20 @@
     "expected_issues": [],
     "expected_risk_level": "pass",
     "expected_rule_ids": [],
-    "notes": "项目方已确认的 v1.0 基线"
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_002",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_002",
       "product_revision": 1,
       "category": "食品",
       "title": "草本风味袋泡茶 30g",
-      "selling_points": ["草本配方", "独立包装"],
+      "selling_points": [
+        "草本配方",
+        "独立包装"
+      ],
       "description": "本产品可有效治疗失眠，睡前冲泡即可。",
       "attributes": {
         "ingredients": "决明子、菊花",
@@ -48,22 +54,29 @@
         "issue_type": "医疗功效宣称",
         "risk_level": "high",
         "evidence_span": "治疗失眠",
-        "rule_ids": ["food_claim_001"]
+        "rule_ids": [
+          "food_claim_001"
+        ]
       }
     ],
     "expected_risk_level": "high",
-    "expected_rule_ids": ["food_claim_001"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_claim_001"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_003",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_003",
       "product_revision": 1,
       "category": "食品",
       "title": "冻干草莓片 20g",
-      "selling_points": ["草莓风味", "冻干工艺"],
+      "selling_points": [
+        "草莓风味",
+        "冻干工艺"
+      ],
       "description": "配料为草莓，无其他配料。",
       "attributes": {
         "ingredients": "草莓",
@@ -80,22 +93,28 @@
         "issue_type": "疾病预防暗示",
         "risk_level": "high",
         "evidence_span": "预防癌症",
-        "rule_ids": ["food_prevention_010"]
+        "rule_ids": [
+          "food_prevention_010"
+        ]
       }
     ],
     "expected_risk_level": "high",
-    "expected_rule_ids": ["food_prevention_010"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_prevention_010"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_004",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_004",
       "product_revision": 1,
       "category": "食品",
       "title": "失眠克星草本茶 30g",
-      "selling_points": ["草本风味"],
+      "selling_points": [
+        "草本风味"
+      ],
       "description": "零风险，人人适用。",
       "attributes": {
         "ingredients": "",
@@ -112,42 +131,54 @@
         "issue_type": "医疗功效宣称",
         "risk_level": "high",
         "evidence_span": "失眠克星",
-        "rule_ids": ["food_claim_001"]
+        "rule_ids": [
+          "food_claim_001"
+        ]
       },
       {
         "field": "description",
         "issue_type": "绝对化安全承诺",
         "risk_level": "medium",
         "evidence_span": "零风险",
-        "rule_ids": ["food_absolute_003"]
+        "rule_ids": [
+          "food_absolute_003"
+        ]
       },
       {
         "field": "description",
         "issue_type": "适用人群泛化",
         "risk_level": "medium",
         "evidence_span": "人人适用",
-        "rule_ids": ["food_audience_004"]
+        "rule_ids": [
+          "food_audience_004"
+        ]
       },
       {
         "field": "attributes.ingredients",
         "issue_type": "配料信息缺失",
         "risk_level": "low",
         "evidence_span": "ingredients",
-        "rule_ids": ["food_attribute_005"]
+        "rule_ids": [
+          "food_attribute_005"
+        ]
       },
       {
         "field": "attributes.shelf_life",
         "issue_type": "保质期信息缺失",
         "risk_level": "low",
         "evidence_span": "shelf_life",
-        "rule_ids": ["food_attribute_006"]
+        "rule_ids": [
+          "food_attribute_006"
+        ]
       },
       {
         "field": "attributes.origin",
         "issue_type": "产地信息缺失",
         "risk_level": "low",
         "evidence_span": "origin",
-        "rule_ids": ["food_attribute_008"]
+        "rule_ids": [
+          "food_attribute_008"
+        ]
       }
     ],
     "expected_risk_level": "high",
@@ -159,17 +190,20 @@
       "food_audience_004",
       "food_claim_001"
     ],
-    "notes": "项目方已确认的 v1.0 基线"
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_005",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_005",
       "product_revision": 1,
       "category": "食品",
       "title": "谷物冲饮粉 300g",
-      "selling_points": ["谷物风味", "方便冲泡"],
+      "selling_points": [
+        "谷物风味",
+        "方便冲泡"
+      ],
       "description": "香浓谷物口感，有助于改善睡眠。",
       "attributes": {
         "ingredients": "燕麦、黑芝麻、麦芽糊精",
@@ -186,22 +220,29 @@
         "issue_type": "保健功能暗示",
         "risk_level": "medium",
         "evidence_span": "改善睡眠",
-        "rule_ids": ["food_health_002"]
+        "rule_ids": [
+          "food_health_002"
+        ]
       }
     ],
     "expected_risk_level": "medium",
-    "expected_rule_ids": ["food_health_002"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_health_002"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_006",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_006",
       "product_revision": 1,
       "category": "食品",
       "title": "原味坚果仁 100g",
-      "selling_points": ["原味烘焙", "小袋分装"],
+      "selling_points": [
+        "原味烘焙",
+        "小袋分装"
+      ],
       "description": "配料为花生仁、腰果仁、巴旦木仁。",
       "attributes": {
         "ingredients": "花生仁、腰果仁、巴旦木仁",
@@ -218,22 +259,29 @@
         "issue_type": "绝对化安全承诺",
         "risk_level": "medium",
         "evidence_span": "100%安全",
-        "rule_ids": ["food_absolute_003"]
+        "rule_ids": [
+          "food_absolute_003"
+        ]
       }
     ],
     "expected_risk_level": "medium",
-    "expected_rule_ids": ["food_absolute_003"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_absolute_003"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_007",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_007",
       "product_revision": 1,
       "category": "食品",
       "title": "红枣夹核桃 500g",
-      "selling_points": ["红枣核桃搭配", "独立包装"],
+      "selling_points": [
+        "红枣核桃搭配",
+        "独立包装"
+      ],
       "description": "红枣与核桃组合，香甜口感。",
       "attributes": {
         "ingredients": "红枣、核桃仁",
@@ -251,22 +299,29 @@
         "issue_type": "规格信息不一致",
         "risk_level": "medium",
         "evidence_span": "500g",
-        "rule_ids": ["food_spec_009"]
+        "rule_ids": [
+          "food_spec_009"
+        ]
       }
     ],
     "expected_risk_level": "medium",
-    "expected_rule_ids": ["food_spec_009"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_spec_009"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_008",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_008",
       "product_revision": 1,
       "category": "食品",
       "title": "海苔脆片 36g",
-      "selling_points": ["薄脆口感", "独立小包"],
+      "selling_points": [
+        "薄脆口感",
+        "独立小包"
+      ],
       "description": "烘烤海苔脆片，开袋即食。",
       "attributes": {
         "ingredients": "",
@@ -283,22 +338,29 @@
         "issue_type": "配料信息缺失",
         "risk_level": "low",
         "evidence_span": "ingredients",
-        "rule_ids": ["food_attribute_005"]
+        "rule_ids": [
+          "food_attribute_005"
+        ]
       }
     ],
     "expected_risk_level": "low",
-    "expected_rule_ids": ["food_attribute_005"],
-    "notes": "项目方已确认的 v1.0 基线"
+    "expected_rule_ids": [
+      "food_attribute_005"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_009",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_009",
       "product_revision": 1,
       "category": "食品",
       "title": "桂花糕 200g",
-      "selling_points": ["桂花香气", "传统糕点"],
+      "selling_points": [
+        "桂花香气",
+        "传统糕点"
+      ],
       "description": "糯米粉制成的桂花风味糕点。",
       "attributes": {
         "ingredients": "糯米粉、白砂糖、桂花",
@@ -315,21 +377,27 @@
         "issue_type": "保质期信息缺失",
         "risk_level": "low",
         "evidence_span": "shelf_life",
-        "rule_ids": ["food_attribute_006"]
+        "rule_ids": [
+          "food_attribute_006"
+        ]
       },
       {
         "field": "attributes.storage_method",
         "issue_type": "储存方式信息缺失",
         "risk_level": "low",
         "evidence_span": "storage_method",
-        "rule_ids": ["food_attribute_007"]
+        "rule_ids": [
+          "food_attribute_007"
+        ]
       },
       {
         "field": "attributes.origin",
         "issue_type": "产地信息缺失",
         "risk_level": "low",
         "evidence_span": "origin",
-        "rule_ids": ["food_attribute_008"]
+        "rule_ids": [
+          "food_attribute_008"
+        ]
       }
     ],
     "expected_risk_level": "low",
@@ -338,17 +406,20 @@
       "food_attribute_007",
       "food_attribute_008"
     ],
-    "notes": "项目方已确认的 v1.0 基线"
+    "notes": "项目方已确认的 v1.1 基线"
   },
   {
     "case_id": "food_case_010",
-    "dataset_version": "1.0.0",
+    "dataset_version": "1.1.0",
     "input": {
       "product_id": "demo_food_010",
       "product_revision": 1,
       "category": "食品",
       "title": "黑芝麻丸 108g",
-      "selling_points": ["黑芝麻风味", "独立小包装"],
+      "selling_points": [
+        "黑芝麻风味",
+        "独立小包装"
+      ],
       "description": "配料为黑芝麻、麦芽糖醇、麦芽糊精；口感香浓。",
       "attributes": {
         "ingredients": "黑芝麻、麦芽糖醇、麦芽糊精",
@@ -362,6 +433,2001 @@
     "expected_issues": [],
     "expected_risk_level": "pass",
     "expected_rule_ids": [],
-    "notes": "项目方已确认的 v1.0 基线"
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_011",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_011",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "红枣夹核桃 500g",
+      "selling_points": [
+        "独立包装"
+      ],
+      "description": "红枣与核桃组合。",
+      "attributes": {
+        "ingredients": "红枣、核桃仁",
+        "shelf_life": "8个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "新疆维吾尔自治区和田地区",
+        "net_content": "250g"
+      },
+      "marketing_description": "礼盒装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "规格信息不一致",
+        "risk_level": "medium",
+        "evidence_span": "500g",
+        "rule_ids": [
+          "food_spec_009"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_spec_009"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_012",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_012",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "椒盐花生 150g",
+      "selling_points": [
+        "香脆口感"
+      ],
+      "description": "全网第一的椒盐风味花生。",
+      "attributes": {
+        "ingredients": "花生仁、食用盐",
+        "shelf_life": "9个月",
+        "storage_method": "密封避光保存",
+        "origin": "山东省潍坊市"
+      },
+      "marketing_description": "150g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "无依据比较性表述",
+        "risk_level": "medium",
+        "evidence_span": "全网第一",
+        "rule_ids": [
+          "food_comparison_011"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_comparison_011"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_013",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_013",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "玉米片 180g",
+      "selling_points": [
+        "香脆谷物"
+      ],
+      "description": "玉米片口感香脆。",
+      "attributes": {
+        "ingredients": "玉米粉、白砂糖",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "河北省石家庄市"
+      },
+      "marketing_description": "绝不含添加剂。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "绝对化成分承诺",
+        "risk_level": "medium",
+        "evidence_span": "绝不含添加剂",
+        "rule_ids": [
+          "food_additive_012"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_additive_012"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_014",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_014",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "高山红茶 80g",
+      "selling_points": [
+        "花果香"
+      ],
+      "description": "原产地直供，红茶风味醇厚。",
+      "attributes": {
+        "ingredients": "红茶",
+        "shelf_life": "24个月",
+        "storage_method": "避光密封保存",
+        "origin": "云南省临沧市"
+      },
+      "marketing_description": "80g 罐装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "产地背书暗示",
+        "risk_level": "medium",
+        "evidence_span": "原产地直供",
+        "rule_ids": [
+          "food_origin_claim_013"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_origin_claim_013"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_015",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_015",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "燕麦饼干 120g",
+      "selling_points": [
+        "谷物风味"
+      ],
+      "description": "酥脆饼干，适合下午茶。",
+      "attributes": {
+        "ingredients": "燕麦片、小麦粉、食用油",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "上海市"
+      },
+      "marketing_description": "官方认证，品质之选。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "认证背书表述",
+        "risk_level": "medium",
+        "evidence_span": "官方认证",
+        "rule_ids": [
+          "food_certification_014"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_certification_014"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_016",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_016",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "芝麻酥 100g",
+      "selling_points": [
+        "芝麻香气"
+      ],
+      "description": "香酥芝麻点心。",
+      "attributes": {
+        "ingredients": "芝麻、白砂糖、小麦粉",
+        "shelf_life": "8个月",
+        "storage_method": "密封保存",
+        "origin": "福建省泉州市"
+      },
+      "marketing_description": "今日不买永远涨价。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验紧迫性营销",
+        "risk_level": "low",
+        "evidence_span": "今日不买永远涨价",
+        "rule_ids": [
+          "food_urgency_015"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_urgency_015"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_017",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_017",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "牛肉干 88g",
+      "selling_points": [
+        "香辣风味"
+      ],
+      "description": "精选牛肉制作。",
+      "attributes": {
+        "ingredients": "牛肉、食用盐、香辛料",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "四川省成都市"
+      },
+      "marketing_description": "万人抢购。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验销量评价",
+        "risk_level": "medium",
+        "evidence_span": "万人抢购",
+        "rule_ids": [
+          "food_social_proof_016"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_social_proof_016"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_018",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_018",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "全麦代餐饼干 150g",
+      "selling_points": [
+        "谷物风味"
+      ],
+      "description": "燃脂瘦身，轻松享用。",
+      "attributes": {
+        "ingredients": "全麦粉、燕麦片",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "河南省郑州市"
+      },
+      "marketing_description": "150g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "减重效果暗示",
+        "risk_level": "medium",
+        "evidence_span": "燃脂瘦身",
+        "rule_ids": [
+          "food_weight_017"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_weight_017"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_019",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_019",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "果蔬固体饮料 60g",
+      "selling_points": [
+        "水果风味"
+      ],
+      "description": "排毒清肠，饭后饮用。",
+      "attributes": {
+        "ingredients": "苹果粉、胡萝卜粉",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "广东省广州市"
+      },
+      "marketing_description": "20 条装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "排毒通便功效宣称",
+        "risk_level": "high",
+        "evidence_span": "排毒清肠",
+        "rule_ids": [
+          "food_detox_018"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_detox_018"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_020",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_020",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黑豆粉 300g",
+      "selling_points": [
+        "豆香浓郁"
+      ],
+      "description": "糖尿病人福音，冲泡方便。",
+      "attributes": {
+        "ingredients": "黑豆",
+        "shelf_life": "12个月",
+        "storage_method": "密封干燥保存",
+        "origin": "黑龙江省哈尔滨市"
+      },
+      "marketing_description": "300g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "疾病相关功效暗示",
+        "risk_level": "high",
+        "evidence_span": "糖尿病人福音",
+        "rule_ids": [
+          "food_disease_019"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_disease_019"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_021",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_021",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "苦荞茶 120g",
+      "selling_points": [
+        "烘焙麦香"
+      ],
+      "description": "每日冲泡，稳定血糖。",
+      "attributes": {
+        "ingredients": "苦荞麦",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "四川省凉山彝族自治州"
+      },
+      "marketing_description": "120g 罐装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "指标改善功效宣称",
+        "risk_level": "high",
+        "evidence_span": "稳定血糖",
+        "rule_ids": [
+          "food_blood_020"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_blood_020"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_022",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_022",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "桂圆红枣茶 90g",
+      "selling_points": [
+        "红枣桂圆风味"
+      ],
+      "description": "睡前一杯，一觉到天亮。",
+      "attributes": {
+        "ingredients": "红枣、桂圆、枸杞",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "宁夏回族自治区中卫市"
+      },
+      "marketing_description": "15 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "睡眠改善暗示",
+        "risk_level": "medium",
+        "evidence_span": "一觉到天亮",
+        "rule_ids": [
+          "food_sleep_021"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_sleep_021"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_023",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_023",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "藜麦谷物杯 55g",
+      "selling_points": [
+        "方便携带"
+      ],
+      "description": "一餐顶三餐，随时补充。",
+      "attributes": {
+        "ingredients": "藜麦、燕麦、玉米片",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "云南省昆明市"
+      },
+      "marketing_description": "55g 杯装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "替代正餐承诺",
+        "risk_level": "medium",
+        "evidence_span": "一餐顶三餐",
+        "rule_ids": [
+          "food_meal_022"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_meal_022"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_024",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_024",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "手工曲奇 90g",
+      "selling_points": [
+        "奶香风味"
+      ],
+      "description": "怎么放都新鲜。",
+      "attributes": {
+        "ingredients": "小麦粉、黄油、白砂糖",
+        "shelf_life": "6个月",
+        "storage_method": "密封阴凉处保存",
+        "origin": "上海市"
+      },
+      "marketing_description": "90g 盒装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "储存条件绝对化承诺",
+        "risk_level": "low",
+        "evidence_span": "怎么放都新鲜",
+        "rule_ids": [
+          "food_storage_claim_023"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_storage_claim_023"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_025",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_025",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "海盐苏打饼干 168g",
+      "selling_points": [
+        "咸香酥脆"
+      ],
+      "description": "小包装设计。",
+      "attributes": {
+        "ingredients": "小麦粉、食用油、食用盐",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "天津市"
+      },
+      "marketing_description": "买一送十。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "夸张数量营销",
+        "risk_level": "medium",
+        "evidence_span": "买一送十",
+        "rule_ids": [
+          "food_quantity_024"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_quantity_024"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_026",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_026",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "咖啡风味固体饮料 100g",
+      "selling_points": [
+        "醇香风味"
+      ],
+      "description": "早餐时冲泡饮用。",
+      "attributes": {
+        "ingredients": "速溶咖啡、白砂糖",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "海南省海口市"
+      },
+      "marketing_description": "立刻精神百倍。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "即时效果承诺",
+        "risk_level": "medium",
+        "evidence_span": "立刻精神百倍",
+        "rule_ids": [
+          "food_immediate_025"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_immediate_025"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_027",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_027",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "果蔬风味饮品 300ml",
+      "selling_points": [
+        "通便神器"
+      ],
+      "description": "每日饮用，降血压。",
+      "attributes": {
+        "ingredients": "苹果汁、胡萝卜汁",
+        "shelf_life": "9个月",
+        "storage_method": "阴凉处保存",
+        "origin": "陕西省西安市"
+      },
+      "marketing_description": "万人抢购。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "selling_points",
+        "issue_type": "排毒通便功效宣称",
+        "risk_level": "high",
+        "evidence_span": "通便神器",
+        "rule_ids": [
+          "food_detox_018"
+        ]
+      },
+      {
+        "field": "description",
+        "issue_type": "指标改善功效宣称",
+        "risk_level": "high",
+        "evidence_span": "降血压",
+        "rule_ids": [
+          "food_blood_020"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验销量评价",
+        "risk_level": "medium",
+        "evidence_span": "万人抢购",
+        "rule_ids": [
+          "food_social_proof_016"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_blood_020",
+      "food_detox_018",
+      "food_social_proof_016"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_028",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_028",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "失眠克星草本茶 30g",
+      "selling_points": [
+        "草本风味"
+      ],
+      "description": "零风险，适合日常冲泡。",
+      "attributes": {
+        "ingredients": "",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "安徽省亳州市"
+      },
+      "marketing_description": "10 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "医疗功效宣称",
+        "risk_level": "high",
+        "evidence_span": "失眠克星",
+        "rule_ids": [
+          "food_claim_001"
+        ]
+      },
+      {
+        "field": "description",
+        "issue_type": "绝对化安全承诺",
+        "risk_level": "medium",
+        "evidence_span": "零风险",
+        "rule_ids": [
+          "food_absolute_003"
+        ]
+      },
+      {
+        "field": "attributes.ingredients",
+        "issue_type": "配料信息缺失",
+        "risk_level": "low",
+        "evidence_span": "ingredients",
+        "rule_ids": [
+          "food_attribute_005"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_absolute_003",
+      "food_attribute_005",
+      "food_claim_001"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_029",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_029",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黑芝麻丸 300g",
+      "selling_points": [
+        "独立包装"
+      ],
+      "description": "每盒净含量 200g。",
+      "attributes": {
+        "ingredients": "黑芝麻、麦芽糖醇",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "山东省济南市"
+      },
+      "marketing_description": "有机认证。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "规格信息不一致",
+        "risk_level": "medium",
+        "evidence_span": "300g",
+        "rule_ids": [
+          "food_spec_009"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "认证背书表述",
+        "risk_level": "medium",
+        "evidence_span": "有机认证",
+        "rule_ids": [
+          "food_certification_014"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_certification_014",
+      "food_spec_009"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_030",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_030",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "原味米饼 80g",
+      "selling_points": [
+        "轻薄口感"
+      ],
+      "description": "大米制成的米饼。",
+      "attributes": {
+        "ingredients": "",
+        "shelf_life": "",
+        "storage_method": "",
+        "origin": ""
+      },
+      "marketing_description": "80g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "attributes.ingredients",
+        "issue_type": "配料信息缺失",
+        "risk_level": "low",
+        "evidence_span": "ingredients",
+        "rule_ids": [
+          "food_attribute_005"
+        ]
+      },
+      {
+        "field": "attributes.shelf_life",
+        "issue_type": "保质期信息缺失",
+        "risk_level": "low",
+        "evidence_span": "shelf_life",
+        "rule_ids": [
+          "food_attribute_006"
+        ]
+      },
+      {
+        "field": "attributes.storage_method",
+        "issue_type": "储存方式信息缺失",
+        "risk_level": "low",
+        "evidence_span": "storage_method",
+        "rule_ids": [
+          "food_attribute_007"
+        ]
+      },
+      {
+        "field": "attributes.origin",
+        "issue_type": "产地信息缺失",
+        "risk_level": "low",
+        "evidence_span": "origin",
+        "rule_ids": [
+          "food_attribute_008"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_attribute_005",
+      "food_attribute_006",
+      "food_attribute_007",
+      "food_attribute_008"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_031",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_031",
+      "product_revision": 2,
+      "category": "食品",
+      "title": "草本风味袋泡茶 30g",
+      "selling_points": [
+        "独立袋泡"
+      ],
+      "description": "睡前可冲泡饮用，口感清香。",
+      "attributes": {
+        "ingredients": "决明子、菊花",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "安徽省亳州市"
+      },
+      "marketing_description": "10 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_032",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_032",
+      "product_revision": 2,
+      "category": "食品",
+      "title": "燕麦饼干 120g",
+      "selling_points": [
+        "谷物风味"
+      ],
+      "description": "酥脆饼干，适合下午茶。",
+      "attributes": {
+        "ingredients": "燕麦片、小麦粉、食用油",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "上海市"
+      },
+      "marketing_description": "120g 盒装，活动时间以页面展示为准。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_033",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_033",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "晚间花草茶 45g",
+      "selling_points": [
+        "花草香气"
+      ],
+      "description": "适合在晚间作为风味饮品冲泡。",
+      "attributes": {
+        "ingredients": "玫瑰花、茉莉花",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "甘肃省兰州市"
+      },
+      "marketing_description": "15 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_034",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_034",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "低温烘焙坚果 150g",
+      "selling_points": [
+        "小袋分装"
+      ],
+      "description": "配料为巴旦木仁、腰果仁和蔓越莓干。",
+      "attributes": {
+        "ingredients": "巴旦木仁、腰果仁、蔓越莓干",
+        "shelf_life": "9个月",
+        "storage_method": "密封避光保存",
+        "origin": "广东省广州市"
+      },
+      "marketing_description": "150g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_035",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_035",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "香辣豆干 100g",
+      "selling_points": [
+        "全网第一"
+      ],
+      "description": "豆香浓郁，开袋即食。",
+      "attributes": {
+        "ingredients": "大豆、食用盐、香辛料",
+        "shelf_life": "8个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "湖南省长沙市"
+      },
+      "marketing_description": "100g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "selling_points",
+        "issue_type": "无依据比较性表述",
+        "risk_level": "medium",
+        "evidence_span": "全网第一",
+        "rule_ids": [
+          "food_comparison_011"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_comparison_011"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_036",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_036",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黑豆粉 300g",
+      "selling_points": [
+        "豆香浓郁"
+      ],
+      "description": "黑豆研磨，冲泡方便。",
+      "attributes": {
+        "ingredients": "黑豆",
+        "shelf_life": "12个月",
+        "storage_method": "密封干燥保存",
+        "origin": "黑龙江省哈尔滨市"
+      },
+      "marketing_description": "糖尿病人福音。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "疾病相关功效暗示",
+        "risk_level": "high",
+        "evidence_span": "糖尿病人福音",
+        "rule_ids": [
+          "food_disease_019"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_disease_019"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_037",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_037",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "藜麦谷物杯 55g",
+      "selling_points": [
+        "一餐顶三餐"
+      ],
+      "description": "谷物混合，方便携带。",
+      "attributes": {
+        "ingredients": "藜麦、燕麦、玉米片",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "云南省昆明市"
+      },
+      "marketing_description": "55g 杯装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "selling_points",
+        "issue_type": "替代正餐承诺",
+        "risk_level": "medium",
+        "evidence_span": "一餐顶三餐",
+        "rule_ids": [
+          "food_meal_022"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_meal_022"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_038",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_038",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "椰子脆片 60g",
+      "selling_points": [
+        "椰香酥脆"
+      ],
+      "description": "椰子风味零食。",
+      "attributes": {
+        "ingredients": "椰子片、白砂糖",
+        "shelf_life": "10个月",
+        "storage_method": "密封避光保存",
+        "origin": "海南省三亚市"
+      },
+      "marketing_description": "最后一分钟。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验紧迫性营销",
+        "risk_level": "low",
+        "evidence_span": "最后一分钟",
+        "rule_ids": [
+          "food_urgency_015"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_urgency_015"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_039",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_039",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "失眠克星草本饮 50g",
+      "selling_points": [
+        "独立袋装"
+      ],
+      "description": "草本风味，冲泡方便。",
+      "attributes": {
+        "ingredients": "菊花、决明子",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "安徽省亳州市"
+      },
+      "marketing_description": "10 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "医疗功效宣称",
+        "risk_level": "high",
+        "evidence_span": "失眠克星",
+        "rule_ids": [
+          "food_claim_001"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_claim_001"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_040",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_040",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "桂圆红枣茶 90g",
+      "selling_points": [
+        "红枣桂圆风味"
+      ],
+      "description": "红枣与桂圆搭配，香甜顺口。",
+      "attributes": {
+        "ingredients": "红枣、桂圆、枸杞",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "宁夏回族自治区中卫市"
+      },
+      "marketing_description": "睡眠更香。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "睡眠改善暗示",
+        "risk_level": "medium",
+        "evidence_span": "睡眠更香",
+        "rule_ids": [
+          "food_sleep_021"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_sleep_021"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_041",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_041",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "果蔬纤维饮 60g",
+      "selling_points": [
+        "果蔬风味"
+      ],
+      "description": "苹果与胡萝卜风味。",
+      "attributes": {
+        "ingredients": "苹果粉、胡萝卜粉",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "广东省广州市"
+      },
+      "marketing_description": "通便神器。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "排毒通便功效宣称",
+        "risk_level": "high",
+        "evidence_span": "通便神器",
+        "rule_ids": [
+          "food_detox_018"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_detox_018"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_042",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_042",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "躺着瘦燕麦饼干 150g",
+      "selling_points": [
+        "谷物风味"
+      ],
+      "description": "酥脆饼干，方便携带。",
+      "attributes": {
+        "ingredients": "全麦粉、燕麦片",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "河南省郑州市"
+      },
+      "marketing_description": "150g 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "减重效果暗示",
+        "risk_level": "medium",
+        "evidence_span": "躺着瘦",
+        "rule_ids": [
+          "food_weight_017"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_weight_017"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_043",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_043",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "高山红茶 80g",
+      "selling_points": [
+        "核心产区认证"
+      ],
+      "description": "红茶风味醇厚。",
+      "attributes": {
+        "ingredients": "红茶",
+        "shelf_life": "24个月",
+        "storage_method": "避光密封保存",
+        "origin": "云南省临沧市"
+      },
+      "marketing_description": "80g 罐装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "selling_points",
+        "issue_type": "产地背书暗示",
+        "risk_level": "medium",
+        "evidence_span": "核心产区认证",
+        "rule_ids": [
+          "food_origin_claim_013"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_origin_claim_013"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_044",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_044",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黑芝麻丸 108g",
+      "selling_points": [
+        "独立小包装"
+      ],
+      "description": "配料为黑芝麻、麦芽糖醇和麦芽糊精，口感香浓。",
+      "attributes": {
+        "ingredients": "黑芝麻、麦芽糖醇、麦芽糊精",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "山东省济南市"
+      },
+      "marketing_description": "12 丸装，共 108g。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_045",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_045",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "咖啡风味固体饮料 100g",
+      "selling_points": [
+        "醇香风味"
+      ],
+      "description": "无任何添加，早晨饮用。",
+      "attributes": {
+        "ingredients": "速溶咖啡、白砂糖",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "海南省海口市"
+      },
+      "marketing_description": "立刻精神百倍。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "绝对化成分承诺",
+        "risk_level": "medium",
+        "evidence_span": "无任何添加",
+        "rule_ids": [
+          "food_additive_012"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "即时效果承诺",
+        "risk_level": "medium",
+        "evidence_span": "立刻精神百倍",
+        "rule_ids": [
+          "food_immediate_025"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_additive_012",
+      "food_immediate_025"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_046",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_046",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "苦荞茶 120g",
+      "selling_points": [
+        "烘焙麦香"
+      ],
+      "description": "抗炎配方，稳定血糖。",
+      "attributes": {
+        "ingredients": "苦荞麦",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "四川省凉山彝族自治州"
+      },
+      "marketing_description": "每天一杯，远离感冒。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "指标改善功效宣称",
+        "risk_level": "high",
+        "evidence_span": "稳定血糖",
+        "rule_ids": [
+          "food_blood_020"
+        ]
+      },
+      {
+        "field": "description",
+        "issue_type": "疾病相关功效暗示",
+        "risk_level": "high",
+        "evidence_span": "抗炎",
+        "rule_ids": [
+          "food_disease_019"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "疾病预防暗示",
+        "risk_level": "high",
+        "evidence_span": "远离感冒",
+        "rule_ids": [
+          "food_prevention_010"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_blood_020",
+      "food_disease_019",
+      "food_prevention_010"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_047",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_047",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "椰子脆片 60g",
+      "selling_points": [
+        "椰香酥脆"
+      ],
+      "description": "椰子风味零食。",
+      "attributes": {
+        "ingredients": "椰子片、白砂糖",
+        "shelf_life": "",
+        "storage_method": "密封避光保存",
+        "origin": "海南省三亚市"
+      },
+      "marketing_description": "错过再无。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "attributes.shelf_life",
+        "issue_type": "保质期信息缺失",
+        "risk_level": "low",
+        "evidence_span": "shelf_life",
+        "rule_ids": [
+          "food_attribute_006"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验紧迫性营销",
+        "risk_level": "low",
+        "evidence_span": "错过再无",
+        "rule_ids": [
+          "food_urgency_015"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_attribute_006",
+      "food_urgency_015"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_048",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_048",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "海盐苏打饼干 168g",
+      "selling_points": [
+        "咸香酥脆"
+      ],
+      "description": "每盒净含量 120g。",
+      "attributes": {
+        "ingredients": "小麦粉、食用油、食用盐",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "天津市"
+      },
+      "marketing_description": "十倍容量。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "规格信息不一致",
+        "risk_level": "medium",
+        "evidence_span": "168g",
+        "rule_ids": [
+          "food_spec_009"
+        ]
+      },
+      {
+        "field": "marketing_description",
+        "issue_type": "夸张数量营销",
+        "risk_level": "medium",
+        "evidence_span": "十倍容量",
+        "rule_ids": [
+          "food_quantity_024"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_quantity_024",
+      "food_spec_009"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_050",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_050",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "枇杷风味膏 120g",
+      "selling_points": [
+        "果味浓郁"
+      ],
+      "description": "原料风味浓郁，适合按需食用。",
+      "attributes": {
+        "ingredients": "麦芽糖、枇杷浓缩汁",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "四川省成都市"
+      },
+      "marketing_description": "每天一勺，防三高。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "疾病预防暗示",
+        "risk_level": "high",
+        "evidence_span": "防三高",
+        "rule_ids": [
+          "food_prevention_010"
+        ]
+      }
+    ],
+    "expected_risk_level": "high",
+    "expected_rule_ids": [
+      "food_prevention_010"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_051",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_051",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "原味酸奶 200g",
+      "selling_points": [
+        "冷藏风味"
+      ],
+      "description": "生牛乳发酵制成，口感细腻。",
+      "attributes": {
+        "ingredients": "生牛乳、乳酸菌",
+        "shelf_life": "21天",
+        "storage_method": "2℃-6℃冷藏保存",
+        "origin": "内蒙古自治区呼和浩特市"
+      },
+      "marketing_description": "200g 杯装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_052",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_052",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "草莓风味乳饮料 250ml",
+      "selling_points": [
+        "果香乳味"
+      ],
+      "description": "草莓风味乳饮料，冷藏后口感更佳。",
+      "attributes": {
+        "ingredients": "水、牛乳、白砂糖、草莓浓缩汁",
+        "shelf_life": "6个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "河北省保定市"
+      },
+      "marketing_description": "孕妇儿童老人均适宜。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "适用人群泛化",
+        "risk_level": "medium",
+        "evidence_span": "孕妇儿童老人均适宜",
+        "rule_ids": [
+          "food_audience_004"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_audience_004"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_053",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_053",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "NFC橙汁 300ml",
+      "selling_points": [
+        "橙香清新"
+      ],
+      "description": "橙汁饮品，冷藏后饮用。",
+      "attributes": {
+        "ingredients": "橙汁",
+        "shelf_life": "30天",
+        "storage_method": "2℃-6℃冷藏保存",
+        "origin": "湖北省宜昌市"
+      },
+      "marketing_description": "吃出小蛮腰。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "减重效果暗示",
+        "risk_level": "medium",
+        "evidence_span": "吃出小蛮腰",
+        "rule_ids": [
+          "food_weight_017"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_weight_017"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_054",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_054",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "酿造酱油 500ml",
+      "selling_points": [
+        "酱香浓郁"
+      ],
+      "description": "适合蘸、炒、焖等日常烹饪场景。",
+      "attributes": {
+        "ingredients": "水、大豆、小麦、食用盐",
+        "shelf_life": "18个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "广东省佛山市"
+      },
+      "marketing_description": "零添加任何物质。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "绝对化成分承诺",
+        "risk_level": "medium",
+        "evidence_span": "零添加任何物质",
+        "rule_ids": [
+          "food_additive_012"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_additive_012"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_055",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_055",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "香菇鸡汤方便面 108g",
+      "selling_points": [
+        "热水冲泡"
+      ],
+      "description": "香菇鸡汤风味，面饼与调味包组合。",
+      "attributes": {
+        "ingredients": "小麦粉、棕榈油、食用盐、香辛料",
+        "shelf_life": "6个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "河南省郑州市"
+      },
+      "marketing_description": "代替全天正餐。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "替代正餐承诺",
+        "risk_level": "medium",
+        "evidence_span": "代替全天正餐",
+        "rule_ids": [
+          "food_meal_022"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_meal_022"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_056",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_056",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "番茄鲭鱼罐头 425g",
+      "selling_points": [
+        "开罐即食"
+      ],
+      "description": "番茄汁浸鲭鱼罐头，适合佐餐。",
+      "attributes": {
+        "ingredients": "鲭鱼、番茄酱、水、食用盐",
+        "shelf_life": "36个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "福建省漳州市"
+      },
+      "marketing_description": "好评100%。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "不可核验销量评价",
+        "risk_level": "medium",
+        "evidence_span": "好评100%",
+        "rule_ids": [
+          "food_social_proof_016"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_social_proof_016"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_057",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_057",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "猪肉白菜水饺 500g",
+      "selling_points": [
+        "冷冻储存"
+      ],
+      "description": "猪肉白菜馅，沸水煮制后食用。",
+      "attributes": {
+        "ingredients": "小麦粉、猪肉、白菜、饮用水",
+        "shelf_life": "12个月",
+        "storage_method": "-18℃以下冷冻保存",
+        "origin": "山东省青岛市"
+      },
+      "marketing_description": "永不变质。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "储存条件绝对化承诺",
+        "risk_level": "low",
+        "evidence_span": "永不变质",
+        "rule_ids": [
+          "food_storage_claim_023"
+        ]
+      }
+    ],
+    "expected_risk_level": "low",
+    "expected_rule_ids": [
+      "food_storage_claim_023"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_058",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_058",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "奶油蛋糕 500g",
+      "selling_points": [
+        "奶香绵密"
+      ],
+      "description": "最好吃的奶油蛋糕，每盒净含量 400g。",
+      "attributes": {
+        "ingredients": "小麦粉、奶油、鸡蛋、白砂糖",
+        "shelf_life": "5天",
+        "storage_method": "2℃-6℃冷藏保存",
+        "origin": "北京市"
+      },
+      "marketing_description": "建议冷藏后食用。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "title",
+        "issue_type": "规格信息不一致",
+        "risk_level": "medium",
+        "evidence_span": "500g",
+        "rule_ids": [
+          "food_spec_009"
+        ]
+      },
+      {
+        "field": "description",
+        "issue_type": "无依据比较性表述",
+        "risk_level": "medium",
+        "evidence_span": "最好吃",
+        "rule_ids": [
+          "food_comparison_011"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_comparison_011",
+      "food_spec_009"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_059",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_059",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黑胡椒鸡胸肉 100g",
+      "selling_points": [
+        "即食方便"
+      ],
+      "description": "低温熟制鸡胸肉，黑胡椒风味。",
+      "attributes": {
+        "ingredients": "鸡胸肉、食用盐、黑胡椒",
+        "shelf_life": "9个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "山东省德州市"
+      },
+      "marketing_description": "吃了就见效。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "即时效果承诺",
+        "risk_level": "medium",
+        "evidence_span": "吃了就见效",
+        "rule_ids": [
+          "food_immediate_025"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_immediate_025"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_060",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_060",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "即食烤鱿鱼丝 80g",
+      "selling_points": [
+        "海味鲜香"
+      ],
+      "description": "鱿鱼丝经调味烘烤制成。",
+      "attributes": {
+        "ingredients": "鱿鱼、白砂糖、食用盐、香辛料",
+        "shelf_life": "10个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "辽宁省大连市"
+      },
+      "marketing_description": "国家级认证。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "marketing_description",
+        "issue_type": "认证背书表述",
+        "risk_level": "medium",
+        "evidence_span": "国家级认证",
+        "rule_ids": [
+          "food_certification_014"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_certification_014"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_061",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_061",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "五谷杂粮粥料 1kg",
+      "selling_points": [
+        "谷物搭配"
+      ],
+      "description": "红豆、燕麦和小米组合，调理肠胃。",
+      "attributes": {
+        "ingredients": "红豆、燕麦、小米、糙米",
+        "shelf_life": "12个月",
+        "storage_method": "阴凉干燥处保存",
+        "origin": "黑龙江省佳木斯市"
+      },
+      "marketing_description": "1kg 袋装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [
+      {
+        "field": "description",
+        "issue_type": "保健功能暗示",
+        "risk_level": "medium",
+        "evidence_span": "调理肠胃",
+        "rule_ids": [
+          "food_health_002"
+        ]
+      }
+    ],
+    "expected_risk_level": "medium",
+    "expected_rule_ids": [
+      "food_health_002"
+    ],
+    "notes": "项目方已确认的 v1.1 基线"
+  },
+  {
+    "case_id": "food_draft_case_062",
+    "dataset_version": "1.1.0",
+    "input": {
+      "product_id": "draft_food_062",
+      "product_revision": 1,
+      "category": "食品",
+      "title": "黄桃罐头 425g",
+      "selling_points": [
+        "果肉饱满"
+      ],
+      "description": "黄桃果肉经糖水浸渍制成，开罐后请冷藏并尽快食用。",
+      "attributes": {
+        "ingredients": "黄桃、水、白砂糖",
+        "shelf_life": "24个月",
+        "storage_method": "阴凉干燥处保存，开罐后冷藏",
+        "origin": "山东省临沂市"
+      },
+      "marketing_description": "425g 罐装。",
+      "trigger_source": "evaluation_draft"
+    },
+    "expected_issues": [],
+    "expected_risk_level": "pass",
+    "expected_rule_ids": [],
+    "notes": "项目方已确认的 v1.1 基线"
   }
 ]
