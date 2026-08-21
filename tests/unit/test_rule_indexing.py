@@ -11,8 +11,10 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 class _FakeIndices:
-    def __init__(self) -> None:
+    def __init__(self, documents: dict[tuple[str, str], dict[str, object]]) -> None:
         self.created: dict[str, dict[str, object]] = {}
+        self.deleted: list[str] = []
+        self._documents = documents
 
     def exists(self, *, index: str) -> bool:
         return index in self.created
@@ -20,11 +22,18 @@ class _FakeIndices:
     def create(self, *, index: str, mappings: dict[str, object]) -> None:
         self.created[index] = mappings
 
+    def delete(self, *, index: str, ignore_unavailable: bool) -> None:
+        assert ignore_unavailable is True
+        self.deleted.append(index)
+        self.created.pop(index, None)
+        for key in [key for key in self._documents if key[0] == index]:
+            del self._documents[key]
+
 
 class _FakeElasticsearch:
     def __init__(self) -> None:
-        self.indices = _FakeIndices()
         self.documents: dict[tuple[str, str], dict[str, object]] = {}
+        self.indices = _FakeIndices(self.documents)
 
     def bulk(self, *, operations: list[dict[str, object]], refresh: str) -> None:
         assert refresh == "wait_for"
@@ -88,3 +97,25 @@ def test_sync_upserts_each_rule_once_and_creates_1024_vector_mapping() -> None:
     assert len(client.documents) == 25
     indexed_rule = client.documents[("food_rules_v1", "food_claim_001:1.1.0")]
     assert indexed_rule["rule_id"] == "food_claim_001"
+
+
+def test_rebuild_replaces_stale_rule_documents_with_the_active_baseline() -> None:
+    client = _FakeElasticsearch()
+    manager = RuleIndexManager(
+        client=client,
+        embedding_provider=_FixedEmbeddingProvider(),
+        index_name="food_rules_v1",
+    )
+    manager.ensure_index()
+    client.documents[("food_rules_v1", "food_claim_001:1.0.0")] = {
+        "rule_id": "food_claim_001",
+        "version": "1.0.0",
+    }
+
+    rebuilt_count = manager.rebuild_rules(_rules())
+
+    assert rebuilt_count == 25
+    assert client.indices.deleted == ["food_rules_v1"]
+    assert len(client.documents) == 25
+    assert ("food_rules_v1", "food_claim_001:1.0.0") not in client.documents
+    assert ("food_rules_v1", "food_claim_001:1.1.0") in client.documents

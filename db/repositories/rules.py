@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from uuid import uuid4
 
 from sqlalchemy import select
@@ -7,6 +8,14 @@ from sqlalchemy.orm import Session
 
 from contracts.models import Rule
 from db.models.core import InspectionTaskRuleModel, QualityRuleModel
+
+
+@dataclass(frozen=True)
+class RulePublication:
+    """The database-side outcome of publishing one complete rule baseline."""
+
+    imported_count: int
+    retired_count: int
 
 
 class RuleRepository:
@@ -42,6 +51,32 @@ class RuleRepository:
             imported_count += 1
         self._session.flush()
         return imported_count
+
+    def publish_rules(self, rules: list[Rule]) -> RulePublication:
+        """Activate the supplied complete baseline and retire superseded active versions.
+
+        Historical rows remain intact for task-rule evidence lookup; only their active
+        status changes, so newly created inspections load exactly this baseline.
+        """
+        imported_count = self.import_rules(rules)
+        categories = {rule.category for rule in rules}
+        active_versions = {
+            (rule.rule_id, rule.version) for rule in rules if rule.status == "enabled"
+        }
+        retired_count = 0
+        if categories:
+            active_records = self._session.scalars(
+                select(QualityRuleModel).where(
+                    QualityRuleModel.category.in_(categories),
+                    QualityRuleModel.status == "enabled",
+                )
+            ).all()
+            for record in active_records:
+                if (record.rule_id, record.version) not in active_versions:
+                    record.status = "disabled"
+                    retired_count += 1
+        self._session.flush()
+        return RulePublication(imported_count=imported_count, retired_count=retired_count)
 
     def list_enabled_food_rules(self) -> list[Rule]:
         """Return only enabled food rules in stable Rule ID order."""

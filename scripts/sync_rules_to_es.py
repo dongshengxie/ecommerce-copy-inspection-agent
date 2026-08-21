@@ -30,6 +30,11 @@ class RuleIndexSynchronizer(Protocol):
         """Upsert the supplied source-of-truth rules into the derived index."""
 
 
+class RuleIndexRebuilder(Protocol):
+    def rebuild_rules(self, rules: list[Rule]) -> int:
+        """Replace the derived index with the supplied active rule baseline."""
+
+
 def sync_enabled_food_rules(
     rule_loader: Callable[[], list[Rule]], index_manager: RuleIndexSynchronizer
 ) -> int:
@@ -37,6 +42,13 @@ def sync_enabled_food_rules(
     rules = rule_loader()
     index_manager.ensure_index()
     return index_manager.sync_rules(rules)
+
+
+def rebuild_enabled_food_rules(
+    rule_loader: Callable[[], list[Rule]], index_manager: RuleIndexRebuilder
+) -> int:
+    """Rebuild the derived ES index from the MySQL active-rule read boundary."""
+    return index_manager.rebuild_rules(rule_loader())
 
 
 def main() -> None:
@@ -56,7 +68,7 @@ def main() -> None:
             ),
             index_name=f"{settings.elasticsearch_index_prefix}_v1",
         )
-        synced_count = sync_enabled_food_rules(
+        synced_count = rebuild_enabled_food_rules(
             RuleRepository(session).list_enabled_food_rules, index_manager
         )
     print(f"已同步 {synced_count} 条已启用食品规则到 Elasticsearch。")

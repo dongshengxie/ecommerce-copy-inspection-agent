@@ -39,6 +39,24 @@ class RuleIndexManager:
 
     def sync_rules(self, rules: list[Rule]) -> int:
         """Idempotently upsert one Elasticsearch document per supplied Rule version."""
+        operations = self._operations(rules)
+        if operations:
+            self._client.bulk(operations=operations, refresh="wait_for")
+        return len(operations) // 2
+
+    def rebuild_rules(self, rules: list[Rule]) -> int:
+        """Replace the derived index only after every active rule can be embedded."""
+        operations = self._operations(rules)
+        indices = self._client.indices
+        if not all(hasattr(indices, method) for method in ("create", "delete")):
+            raise TypeError("Elasticsearch client must expose indices.create and indices.delete")
+        indices.delete(index=self._index_name, ignore_unavailable=True)  # type: ignore[union-attr]
+        indices.create(index=self._index_name, mappings=self._mapping())  # type: ignore[union-attr]
+        if operations:
+            self._client.bulk(operations=operations, refresh="wait_for")
+        return len(operations) // 2
+
+    def _operations(self, rules: list[Rule]) -> list[dict[str, object]]:
         operations: list[dict[str, object]] = []
         for rule in sorted(rules, key=lambda item: (item.rule_id, item.version)):
             vector = self._embedding_provider.embed(self._retrieval_text(rule))
@@ -49,10 +67,7 @@ class RuleIndexManager:
                     document.model_dump(mode="json"),
                 ]
             )
-
-        if operations:
-            self._client.bulk(operations=operations, refresh="wait_for")
-        return len(operations) // 2
+        return operations
 
     @staticmethod
     def _retrieval_text(rule: Rule) -> str:
