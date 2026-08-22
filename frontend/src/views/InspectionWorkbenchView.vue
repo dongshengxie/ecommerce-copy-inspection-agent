@@ -74,7 +74,11 @@ function evidenceMatches(field: string): EvidenceMatch[] {
   return (workbench.report?.issues ?? [])
     .map((issue, index) => ({ issue, index }))
     .filter(({ issue }) => issue.field === field)
-    .map(({ issue, index }) => ({ evidence: issue.evidence_span, issueNumber: index + 1 }))
+    .map(({ issue, index }) => ({
+      evidence: issue.evidence_span,
+      issueNumber: index + 1,
+      riskLevel: issue.risk_level,
+    }))
 }
 
 function attributeText(value: unknown): string {

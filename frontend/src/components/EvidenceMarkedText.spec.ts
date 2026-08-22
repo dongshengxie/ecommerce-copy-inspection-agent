@@ -31,4 +31,25 @@ describe('EvidenceMarkedText', () => {
       '2',
     ])
   })
+
+  it('keeps every issue marker when one evidence span contains another', () => {
+    const wrapper = mount(EvidenceMarkedText, {
+      props: {
+        text: '这款茶可以改善睡眠，适合睡前饮用。',
+        matches: [
+          { evidence: '改善睡眠', issueNumber: 1, riskLevel: 'medium' },
+          { evidence: '可以改善睡眠', issueNumber: 2, riskLevel: 'high' },
+        ],
+      },
+    })
+
+    expect(wrapper.findAll('[data-testid="evidence-highlight"]')).toHaveLength(1)
+    expect(wrapper.find('[data-testid="evidence-highlight"]').classes()).toContain('risk-high')
+    expect(wrapper.findAll('[data-testid="issue-marker"]').map((marker) => marker.text())).toEqual([
+      '1',
+      '2',
+    ])
+    expect(wrapper.findAll('[data-testid="issue-marker"]')[0].classes()).toContain('risk-medium')
+    expect(wrapper.findAll('[data-testid="issue-marker"]')[1].classes()).toContain('risk-high')
+  })
 })

@@ -397,9 +397,20 @@ textarea:focus-visible {
 .evidence-highlight {
   position: relative;
   padding: 0 2px;
+  color: #9b690d;
+  background: #fff6df;
+  border-radius: 3px;
+}
+
+.evidence-highlight.risk-high {
   color: #8d351d;
   background: #ffe2d7;
-  border-radius: 3px;
+}
+
+.evidence-highlight.risk-low,
+.evidence-highlight.risk-pass {
+  color: #486b5b;
+  background: var(--success-soft);
 }
 
 .issue-marker {
@@ -409,12 +420,21 @@ textarea:focus-visible {
   margin-left: 3px;
   place-items: center;
   color: white;
-  background: var(--risk);
+  background: #d59122;
   border-radius: 50%;
   font-family: var(--font-data);
   font-size: 10px;
   font-weight: 800;
   vertical-align: text-top;
+}
+
+.issue-marker.risk-high {
+  background: var(--risk);
+}
+
+.issue-marker.risk-low,
+.issue-marker.risk-pass {
+  background: #6f8a9f;
 }
 
 .issue-panel-heading {
