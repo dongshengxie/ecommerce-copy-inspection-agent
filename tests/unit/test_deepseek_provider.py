@@ -15,6 +15,8 @@ def test_deepseek_provider_returns_parsed_json_and_safe_usage_metadata() -> None
             "model": "deepseek-chat",
             "messages": [{"role": "system", "content": "请返回 json"}],
             "response_format": {"type": "json_object"},
+            "thinking": {"type": "disabled"},
+            "temperature": 0,
             "stream": False,
         }
         return httpx.Response(

@@ -175,6 +175,7 @@ def test_semantic_skill_rejects_evidence_that_is_not_in_the_reported_source_fiel
 
     assert result.issues == []
     assert result.degradation_flags == ["structured_output_invalid"]
+    assert result.trace_metadata["validation_stage"] == "finding_grounding"
 
 
 def test_semantic_skill_records_llm_failure_metadata_without_schema_repair() -> None:

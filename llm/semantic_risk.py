@@ -12,6 +12,16 @@ from rag.models import RetrievalCandidate, RetrievalResult
 from rag.providers import RagUnavailableError
 
 _PROMPT_PATH = Path(__file__).resolve().parents[1] / "prompts" / "semantic_risk" / "1.0.0.json"
+_STRUCTURED_OUTPUT_CONTRACT = """
+只返回一个 JSON object，不要 Markdown 或额外文本。严格使用以下结构：
+{"findings":[
+  {"rule_id":"候选规则 ID","rule_version":"候选规则版本","field":"商品字段名",
+   "evidence_span":"字段中的逐字原文","rationale":"风险说明","suggestion":"修改建议","confidence":0.0}
+]}
+没有发现时返回 {"findings":[]}。每个 finding 只能引用 candidate_rules 中原样提供的
+rule_id 和 version；field 必须在该规则的 field_scope 内；evidence_span 必须是相应商品字段中
+逐字出现的非空文本；不得增加字段。
+""".strip()
 
 
 class _SemanticPayload(BaseModel):
@@ -57,11 +67,21 @@ class SemanticRiskSkill:
                 ),
             )
 
+        validation_stage: str | None = None
         for attempt in range(2):
             try:
-                findings = _SemanticPayload.model_validate(response.payload).findings
+                try:
+                    findings = _SemanticPayload.model_validate(response.payload).findings
+                except ValidationError:
+                    validation_stage = "payload_schema"
+                    raise
+                try:
+                    issues = self._issues(product, candidates, findings)
+                except ValueError:
+                    validation_stage = "finding_grounding"
+                    raise
                 return SemanticSkillResult(
-                    issues=self._issues(product, candidates, findings),
+                    issues=issues,
                     trace_metadata=self._trace_metadata(
                         response,
                         retry_count=attempt,
@@ -99,6 +119,7 @@ class SemanticRiskSkill:
                 retry_count=1,
                 schema_valid=False,
                 repair_attempted=True,
+                validation_stage=validation_stage,
             ),
         )
 
@@ -107,7 +128,10 @@ class SemanticRiskSkill:
     ) -> list[dict[str, str]]:
         prompt = json.loads(_PROMPT_PATH.read_text(encoding="utf-8"))
         return [
-            {"role": "system", "content": str(prompt["system"])},
+            {
+                "role": "system",
+                "content": f"{prompt['system']}\n{_STRUCTURED_OUTPUT_CONTRACT}",
+            },
             {
                 "role": "user",
                 "content": json.dumps(
@@ -196,12 +220,13 @@ class SemanticRiskSkill:
         retry_count: int,
         schema_valid: bool,
         repair_attempted: bool,
+        validation_stage: str | None = None,
     ) -> dict[str, object]:
         from llm.models import LLMResponse
 
         if not isinstance(response, LLMResponse):
             raise TypeError("LLM provider must return LLMResponse")
-        return {
+        metadata: dict[str, object] = {
             "provider": self._provider_name,
             "prompt_name": self._prompt_name,
             "prompt_version": self._prompt_version,
@@ -213,6 +238,9 @@ class SemanticRiskSkill:
             "schema_valid": schema_valid,
             "repair_attempted": repair_attempted,
         }
+        if validation_stage is not None:
+            metadata["validation_stage"] = validation_stage
+        return metadata
 
     def _unavailable_trace_metadata(
         self, *, retry_count: int, repair_attempted: bool

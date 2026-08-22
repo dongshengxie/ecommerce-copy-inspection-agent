@@ -69,7 +69,7 @@ def create_semantic_inspection_skill(settings: Settings) -> SemanticInspectionSk
                 api_key=settings.deepseek_api_key,
                 model=settings.deepseek_model,
             ),
-            prompt_version="1.0.0",
+            prompt_version="1.1.0",
         ),
     )
 

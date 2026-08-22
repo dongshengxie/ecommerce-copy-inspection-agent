@@ -46,6 +46,8 @@ class DeepSeekProvider:
                     "model": self._model,
                     "messages": messages,
                     "response_format": {"type": "json_object"},
+                    "thinking": {"type": "disabled"},
+                    "temperature": 0,
                     "stream": False,
                 },
                 timeout=20.0,
